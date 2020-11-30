@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "kETH": "SYMBOL=ETHUSDT node klines"
   },
   "repository": {
     "type": "git",
