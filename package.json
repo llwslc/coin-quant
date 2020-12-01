@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "kETH": "SYMBOL=ETHUSDT node klines"
+    "kETH": "SYMBOL=ETHUSDT node klines",
+    "kBTC": "SYMBOL=BTCUSDT node klines"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   "homepage": "https://github.com/llwslc/coin-quant#readme",
   "dependencies": {
     "axios": "^0.21.0",
+    "log4js": "^6.3.0",
     "sqlite3": "^5.0.0"
   }
 }
