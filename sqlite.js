@@ -4,3 +4,4 @@ const log4js = require('log4js');
 const config = require('./config.js');
 const sqlite3 = require('sqlite3').verbose();
 
+const logger = log4js.getLogger('sqlite');
