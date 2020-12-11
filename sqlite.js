@@ -6,3 +6,4 @@ const sqlite3 = require('sqlite3').verbose();
 
 const logger = log4js.getLogger('sqlite');
 const dbPath = config.sqlite.path;
+
