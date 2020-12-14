@@ -9,3 +9,4 @@ const dbPath = config.sqlite.path;
 
 if (!fs.existsSync(dbPath)) {
   fs.mkdirSync(dbPath);
+}
