@@ -11,3 +11,4 @@ if (!fs.existsSync(dbPath)) {
   fs.mkdirSync(dbPath);
 }
 
+const dbOpen = async dbFile => {
