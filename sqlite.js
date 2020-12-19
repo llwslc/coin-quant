@@ -12,3 +12,4 @@ if (!fs.existsSync(dbPath)) {
 }
 
 const dbOpen = async dbFile => {
+  return new Promise((reslove, reject) => {
