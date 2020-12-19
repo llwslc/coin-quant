@@ -13,3 +13,4 @@ if (!fs.existsSync(dbPath)) {
 
 const dbOpen = async dbFile => {
   return new Promise((reslove, reject) => {
+    const db = new sqlite3.Database(dbFile, error => {
