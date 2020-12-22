@@ -16,3 +16,4 @@ const dbOpen = async dbFile => {
     const db = new sqlite3.Database(dbFile, error => {
       if (error) {
         return reject(error);
+      }
