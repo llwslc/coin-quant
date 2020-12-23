@@ -17,3 +17,4 @@ const dbOpen = async dbFile => {
       if (error) {
         return reject(error);
       }
+      logger.info(`${dbFile} Open successfully`);
