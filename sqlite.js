@@ -18,3 +18,4 @@ const dbOpen = async dbFile => {
         return reject(error);
       }
       logger.info(`${dbFile} Open successfully`);
+      db.getSync = async (sql, param) => {
