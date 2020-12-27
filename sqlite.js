@@ -20,4 +20,5 @@ const dbOpen = async dbFile => {
       logger.info(`${dbFile} Open successfully`);
       db.getSync = async (sql, param) => {
         return new Promise((reslove, reject) => {
+          db.get(sql, param, (error, res) => {
 module.exports = db;
