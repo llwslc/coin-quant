@@ -6,3 +6,4 @@ const config = require('./config.js');
 const logger = log4js.getLogger('klines');
 logger.level = 'info';
 
+const symbol = process.env.SYMBOL;
