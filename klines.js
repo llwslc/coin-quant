@@ -9,3 +9,4 @@ logger.level = 'info';
 const symbol = process.env.SYMBOL;
 let db = {};
 
+const checkData = async () => {
