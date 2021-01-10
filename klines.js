@@ -10,3 +10,4 @@ const symbol = process.env.SYMBOL;
 let db = {};
 
 const checkData = async () => {
+  const data = await db.getSync(`SELECT * FROM klines;`);
