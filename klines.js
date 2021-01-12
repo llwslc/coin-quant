@@ -12,3 +12,4 @@ let db = {};
 const checkData = async () => {
   const data = await db.getSync(`SELECT * FROM klines;`);
   let preTime = data[0].openTime;
+  for (let i = 1, iLen = data.length; i < iLen; ++i) {
