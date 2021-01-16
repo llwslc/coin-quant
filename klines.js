@@ -15,3 +15,4 @@ const checkData = async () => {
   for (let i = 1, iLen = data.length; i < iLen; ++i) {
     const curTime = data[i].openTime;
     if (curTime - preTime !== 24 * 60 * 60 * 1000) {
+      logger.error(
