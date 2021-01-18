@@ -18,3 +18,4 @@ const checkData = async () => {
       logger.error(
         `CHECK ERROR: ${data[i - 1]}-${new Date(preTime).toLocaleString()}, ${data[i]}-${new Date(
           curTime
+        ).toLocaleString()}, `
