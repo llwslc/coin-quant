@@ -17,3 +17,4 @@ const checkData = async () => {
     if (curTime - preTime !== 24 * 60 * 60 * 1000) {
       logger.error(
         `CHECK ERROR: ${data[i - 1]}-${new Date(preTime).toLocaleString()}, ${data[i]}-${new Date(
+          curTime
