@@ -20,3 +20,4 @@ const checkData = async () => {
           curTime
         ).toLocaleString()}, `
       );
+    } else {
