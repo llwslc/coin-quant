@@ -21,3 +21,4 @@ const checkData = async () => {
         ).toLocaleString()}, `
       );
     } else {
+      preTime = curTime;
