@@ -23,3 +23,4 @@ const checkData = async () => {
     } else {
       preTime = curTime;
     }
+  }
