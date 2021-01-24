@@ -24,3 +24,4 @@ const checkData = async () => {
       preTime = curTime;
     }
   }
+  logger.info(`CHECK END`);
