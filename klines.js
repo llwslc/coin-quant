@@ -26,3 +26,4 @@ const checkData = async () => {
   }
   logger.info(`CHECK END`);
 };
+
