@@ -27,3 +27,4 @@ const checkData = async () => {
   logger.info(`CHECK END`);
 };
 
+const getKlines = async (startTime = 0) => {
