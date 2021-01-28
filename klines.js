@@ -28,3 +28,4 @@ const checkData = async () => {
 };
 
 const getKlines = async (startTime = 0) => {
+  try {
