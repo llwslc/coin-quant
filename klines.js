@@ -29,3 +29,4 @@ const checkData = async () => {
 
 const getKlines = async (startTime = 0) => {
   try {
+    // https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1h&limit=1000
