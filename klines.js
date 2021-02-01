@@ -31,3 +31,4 @@ const getKlines = async (startTime = 0) => {
   try {
     // https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1h&limit=1000
     const klines = await axios.get(config.klinesUrl, {
+      params: { symbol, interval: '1h', startTime, limit: 1000 }
