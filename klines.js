@@ -33,3 +33,4 @@ const getKlines = async (startTime = 0) => {
     const klines = await axios.get(config.klinesUrl, {
       params: { symbol, interval: '1h', startTime, limit: 1000 }
     });
+    const { data } = klines;
