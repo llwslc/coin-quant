@@ -34,3 +34,4 @@ const getKlines = async (startTime = 0) => {
       params: { symbol, interval: '1h', startTime, limit: 1000 }
     });
     const { data } = klines;
+    // 去掉最新一小时的数据
