@@ -79,6 +79,7 @@ const db = async dbName => {
       */
       await dbObj.runSync(`CREATE TABLE "klines" (
         "id"	INTEGER NOT NULL,
+        "symbol"	TEXT NOT NULL,
         "openTime"	INTEGER NOT NULL UNIQUE,
         "open"	TEXT NOT NULL,
         "high"	TEXT NOT NULL,
