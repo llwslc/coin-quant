@@ -35,3 +35,4 @@ const getKlines = async (startTime = 0) => {
     });
     const { data } = klines;
     // 去掉最新一小时的数据
+    const confirmData = data.slice(0, data.length - 1);
