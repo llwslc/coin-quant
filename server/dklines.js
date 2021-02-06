@@ -29,7 +29,7 @@ const checkData = async symbol => {
       logger.error(
         `[${symbol}] CHECK ERROR: ${data[i - 1].openTime}-${new Date(preTime).toLocaleString()}, ${
           data[i].openTime
-        }-${new Date(curTime).toLocaleString()}, `
+        }-${new Date(curTime).toLocaleString()}`
       );
     }
     preTime = curTime;
