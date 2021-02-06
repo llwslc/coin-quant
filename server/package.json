@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "git clone git@github.com:llwslc/coin-quant-db.git db",
     "kETH": "SYMBOL=ETHUSDT node klines",
     "kBTC": "SYMBOL=BTCUSDT node klines"
   },
