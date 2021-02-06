@@ -6,6 +6,7 @@ const config = require('./config.js');
 const logger = log4js.getLogger('dklines');
 logger.level = 'info';
 
+const daySec = 24 * 60 * 60 * 1000;
 let db = {};
 
 const getSymbols = async () => {
@@ -19,26 +20,30 @@ const getSymbols = async () => {
   }
 };
 
-const checkData = async (symbol) => {
-  const data = await db.getSync(`SELECT * FROM klines WHERE symbol='${symbol}';`);
+const checkData = async symbol => {
+  const data = await db.allSync(`SELECT * FROM klines WHERE symbol='${symbol}';`);
   let preTime = data[0].openTime;
   for (let i = 1, iLen = data.length; i < iLen; ++i) {
     const curTime = data[i].openTime;
-    if (curTime - preTime !== 24 * 60 * 60 * 1000) {
+    if (curTime - preTime !== daySec) {
       logger.error(
-        `[${symbol}] CHECK ERROR: ${data[i - 1]}-${new Date(preTime).toLocaleString()}, ${data[i]}-${new Date(
-          curTime
-        ).toLocaleString()}, `
+        `[${symbol}] CHECK ERROR: ${data[i - 1].openTime}-${new Date(preTime).toLocaleString()}, ${
+          data[i].openTime
+        }-${new Date(curTime).toLocaleString()}, `
       );
-    } else {
-      preTime = curTime;
     }
+    preTime = curTime;
   }
   logger.info(`[${symbol}] CHECK END`);
 };
 
 const getKlines = async (symbol, startTime = 0) => {
   try {
+    // 已有前一天的数据
+    if (Date.now() - startTime < 2 * daySec) {
+      return;
+    }
+
     // https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d&limit=1000
     const klines = await axios.get(config.klinesUrl, {
       params: { symbol, interval: '1d', startTime, limit: 1000 }
@@ -49,6 +54,14 @@ const getKlines = async (symbol, startTime = 0) => {
 
     if (confirmData.length === 1) {
       logger.info(`[${symbol}] NO MORE ${new Date(startTime).toLocaleString()}`);
+
+      const end = confirmData[0][0];
+      if (Date.now() - end > 7 * daySec) {
+        // 下架了
+        await db.runSync(`INSERT OR IGNORE INTO delists (symbol, end) VALUES ('${symbol}', '${end}');`);
+        logger.info(`[${symbol}] DELIST`);
+      }
+
       return checkData(symbol);
     }
 
@@ -85,26 +98,41 @@ const getKlines = async (symbol, startTime = 0) => {
 
 const main = async () => {
   db = await sqlite(config.sqlite.dklines);
+  const delistData = await db.allSync(`SELECT * FROM delists;`);
+  const delistSymbols = [];
+  for (const d of delistData) {
+    delistSymbols.push(d.symbol);
+  }
+
   const data = await getSymbols();
-  for (const d of data.slice(0, 2)) {
+  const symbols = [];
+  for (const d of data) {
     const symbol = d.symbol;
     const fiat = 'USDT';
     if (symbol.indexOf(fiat) === symbol.length - fiat.length) {
+      const moreFiat = 'USD';
       const upFiat = 'UPUSDT';
       const downFiat = 'DOWNUSDT';
       const bullFiat = 'BULLUSDT';
       const bearFiat = 'BEARUSDT';
       if (
-        symbol.indexOf(upFiat) !== symbol.length - upFiat.length &&
-        symbol.indexOf(downFiat) !== symbol.length - downFiat.length &&
-        symbol.indexOf(bullFiat) !== symbol.length - bullFiat.length &&
-        symbol.indexOf(bearFiat) !== symbol.length - bearFiat.length
+        symbol.match(new RegExp(moreFiat, 'g')).length === 1 &&
+        symbol.indexOf(upFiat) === -1 &&
+        symbol.indexOf(downFiat) === -1 &&
+        symbol.indexOf(bullFiat) === -1 &&
+        symbol.indexOf(bearFiat) === -1 &&
+        !delistSymbols.includes(symbol)
       ) {
-        const data = await db.getSync(`SELECT MAX(openTime) AS openTime FROM klines WHERE symbol='${symbol}';`);
-        const startTime = data[0].openTime ? data[0].openTime : undefined;
-        await getKlines(symbol, startTime);
+        symbols.push(symbol);
       }
     }
+  }
+
+  logger.info(`Delists: ${delistSymbols.length}, symbols: ${symbols.length}`);
+  for (const s of symbols) {
+    const data = await db.getSync(`SELECT MAX(openTime) AS openTime FROM klines WHERE symbol='${s}';`);
+    const startTime = data[0].openTime ? data[0].openTime : undefined;
+    await getKlines(s, startTime);
   }
 };
 
