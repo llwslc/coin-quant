@@ -80,7 +80,7 @@ const db = async dbName => {
       await dbObj.runSync(`CREATE TABLE "klines" (
         "id"	INTEGER NOT NULL,
         "symbol"	TEXT NOT NULL,
-        "openTime"	INTEGER NOT NULL UNIQUE,
+        "openTime"	INTEGER NOT NULL,
         "open"	TEXT NOT NULL,
         "high"	TEXT NOT NULL,
         "low"	TEXT NOT NULL,
@@ -91,9 +91,21 @@ const db = async dbName => {
         "numberOfTrades"	INTEGER NOT NULL,
         "takerBuyBaseAssetVolume"	TEXT NOT NULL,
         "takerBuyQuoteAssetVolume"	TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT),
+        UNIQUE(symbol, openTime)
+      );`);
+    }
+
+    const delists = await dbObj.getSync(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'delists'`);
+    if (delists.length == 0) {
+      await dbObj.runSync(`CREATE TABLE "delists" (
+        "id"	INTEGER NOT NULL,
+        "symbol"	TEXT NOT NULL UNIQUE,
+        "end"	INTEGER NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
       );`);
     }
+
     return dbObj;
   } catch (error) {
     logger.error(`DB Error:`, error.message ? error.message : error);
