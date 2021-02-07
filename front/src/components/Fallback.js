@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { Spin } from 'antd';
 
 const Loading = styled.div`
-  text-align: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 function App() {
