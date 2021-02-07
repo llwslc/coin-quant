@@ -117,6 +117,7 @@ const findPoint = (open, close) => {
     if (data[0] < 0 && data[1] < 0 && data[2] < 0) {
       return true;
     }
+    return false;
   };
   // 持续下跌
   const downs = [];
@@ -124,6 +125,7 @@ const findPoint = (open, close) => {
     if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
       return true;
     }
+    return false;
   };
   // 暴力上涨
   const uups = [];
@@ -133,6 +135,7 @@ const findPoint = (open, close) => {
         return true;
       }
     }
+    return false;
   };
   // 暴力下跌
   const ddowns = [];
@@ -142,27 +145,57 @@ const findPoint = (open, close) => {
         return true;
       }
     }
+    return false;
   };
   // 微弱上涨
   const dups = [];
   const dupsFunc = data => {
     if (data[0] < 0 && data[1] < 0 && data[2] < 0) {
-      if (data[0] < data[1] * 1.1 && data[1] < data[2] * 1.1) {
+      if (data[0] > data[1] * 1.5) {
         return true;
       }
     }
+    return false;
   };
   // 微弱下跌
   const udowns = [];
   const udownsFunc = data => {
     if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
-      if (data[0] > data[1] * 1.1 && data[1] > data[2] * 1.1) {
+      if (data[0] > data[1] * 1.5) {
         return true;
       }
     }
+    return false;
   };
   // 涨到顶部
+  const tops = [];
+  const topsFunc = data => {
+    if (data[0] < 0 && data[0] > data[1] * 0.1) {
+      return true;
+    }
+    if (data[0] > 0 && data[1] < 0) {
+      return true;
+    }
+    if (data[0] > 0 && data[2] < 0) {
+      return true;
+    }
+    return false;
+  };
   // 跌到底部
+  const bottoms = [];
+  const bottomsFunc = data => {
+    if (data[0] > 0 && data[0] < data[1] * 0.1) {
+      return true;
+    }
+    if (data[0] < 0 && data[1] > 0) {
+      return true;
+    }
+    if (data[0] < 0 && data[2] > 0) {
+      return true;
+    }
+    return false;
+  };
+
   const symbols = Object.keys(open);
   for (const s of symbols) {
     const o = open[s].reverse();
@@ -189,9 +222,15 @@ const findPoint = (open, close) => {
     if (udownsFunc(difs)) {
       udowns.push(s);
     }
+    if (upsFunc(difs)) {
+      ups.push(s);
+    }
+    if (bottomsFunc(difs)) {
+      bottoms.push(s);
+    }
   }
 
-  return { ups, downs, uups, ddowns, dups, udowns };
+  return { ups, downs, uups, ddowns, dups, udowns, ups, bottoms };
 };
 
 const main = async () => {
@@ -201,8 +240,20 @@ const main = async () => {
   const openMA = movingAvg(symbolOpen);
   const closeMA = movingAvg(symbolClose);
   const newSymbol = findNew(symbolOpen);
-  const { ups, downs, uups, ddowns, dups, udowns } = findPoint(openMA, closeMA);
-  console.log({ newSymbol, ups, downs, uups, ddowns, dups, udowns });
+  const { ups, downs, uups, ddowns, dups, udowns, ups, bottoms } = findPoint(openMA, closeMA);
+
+  console.log(`总数:${Object.keys(openMA).length}`);
+  console.log(`新币:${newSymbol.length}`);
+  console.log(`持续上涨:${ups.length}`);
+  console.log(`持续下跌:${downs.length}`);
+  console.log(`暴力上涨:${uups.length}`);
+  console.log(`暴力下跌:${ddowns.length}`);
+  console.log(`微弱上涨:${dups.length}`);
+  console.log(`微弱下跌:${udowns.length}`);
+  console.log(`涨到顶部:${tops.length}`);
+  console.log(`跌到底部:${bottoms.length}`);
+
+  console.log({ newSymbol, ups, downs, uups, ddowns, dups, udowns, ups, bottoms });
 };
 
 main();
