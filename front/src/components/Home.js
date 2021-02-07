@@ -14,7 +14,7 @@ function App() {
 
   return (
     <Loading>
-      <Button />
+      <Button type="primary">Button</Button>
     </Loading>
   );
 }
