@@ -4,6 +4,10 @@ module.exports = {
     dklines: 'dklines'
   },
 
+  express: {
+    port: 8080
+  },
+
   fullNode: 'https://api.trongrid.io/',
   privateKey: '0000000000000000000000000000000000000000000000000000000000000001',
 
