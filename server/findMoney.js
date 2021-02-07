@@ -167,7 +167,7 @@ const findPoint = (open, close) => {
     }
     return false;
   };
-  // 涨到顶部
+  // 处于顶部
   const tops = [];
   const topsFunc = data => {
     if (data[0] < 0 && data[0] > data[1] * 0.1) {
@@ -181,7 +181,7 @@ const findPoint = (open, close) => {
     }
     return false;
   };
-  // 跌到底部
+  // 处于底部
   const bottoms = [];
   const bottomsFunc = data => {
     if (data[0] > 0 && data[0] < data[1] * 0.1) {
@@ -248,17 +248,14 @@ const findPoint = (open, close) => {
     if (slowDownsFunc(difs)) {
       slowDowns.push(s);
     }
-    if (topsFunc(difs)) {
+    if (topsFunc(difs) || fuckingTopsFunc(difs)) {
       tops.push(s);
     }
-    if (bottomsFunc(difs)) {
+    if (bottomsFunc(difs) || fuckingBottomsFunc(difs)) {
       bottoms.push(s);
     }
     if (fuckingTopsFunc(difs)) {
       fuckingTops.push(s);
-    }
-    if (s === 'YFIUSDT') {
-      console.log(difs);
     }
     if (fuckingBottomsFunc(difs)) {
       fuckingBottoms.push(s);
@@ -288,8 +285,8 @@ const main = async () => {
   console.log(`暴力下跌: ${fastDowns.length}`);
   console.log(`微弱上涨: ${slowUps.length}`);
   console.log(`微弱下跌: ${slowDowns.length}`);
-  console.log(`涨到顶部: ${tops.length}`);
-  console.log(`跌到底部: ${bottoms.length}`);
+  console.log(`处于顶部: ${tops.length}`);
+  console.log(`处于底部: ${bottoms.length}`);
   console.log(`确认顶部: ${fuckingTops.length}`);
   console.log(`确认底部: ${fuckingBottoms.length}`);
 
