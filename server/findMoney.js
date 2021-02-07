@@ -128,8 +128,8 @@ const findPoint = (open, close) => {
     return false;
   };
   // 暴力上涨
-  const uups = [];
-  const uupsFunc = data => {
+  const fastUps = [];
+  const fastUpsFunc = data => {
     if (data[0] < 0 && data[1] < 0 && data[2] < 0) {
       if (data[0] < data[1] * 1.5) {
         return true;
@@ -138,8 +138,8 @@ const findPoint = (open, close) => {
     return false;
   };
   // 暴力下跌
-  const ddowns = [];
-  const ddownsFunc = data => {
+  const fastDowns = [];
+  const fastDownsFunc = data => {
     if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
       if (data[0] > data[1] * 1.5) {
         return true;
@@ -148,8 +148,8 @@ const findPoint = (open, close) => {
     return false;
   };
   // 微弱上涨
-  const dups = [];
-  const dupsFunc = data => {
+  const slowUps = [];
+  const slowUpsFunc = data => {
     if (data[0] < 0 && data[1] < 0 && data[2] < 0) {
       if (data[0] > data[1] * 1.5) {
         return true;
@@ -158,10 +158,10 @@ const findPoint = (open, close) => {
     return false;
   };
   // 微弱下跌
-  const udowns = [];
-  const udownsFunc = data => {
+  const slowDowns = [];
+  const slowDownsFunc = data => {
     if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
-      if (data[0] > data[1] * 1.5) {
+      if (data[0] < data[1] * 1.5) {
         return true;
       }
     }
@@ -195,6 +195,32 @@ const findPoint = (open, close) => {
     }
     return false;
   };
+  // 确认顶部
+  const fuckingTops = [];
+  const fuckingTopsFunc = data => {
+    if (data[0] > 0 && data[1] > 0 && data[2] < 0) {
+      return true;
+    }
+    if (data[0] > 0 && data[1] > 0 && data[2] > 0 && data[3] > 0) {
+      if (data[0] > data[1] * 1.1 && data[1] > data[2] * 1.5 && data[3] > data[2] * 1.5) {
+        return true;
+      }
+    }
+    return false;
+  };
+  // 确认底部
+  const fuckingBottoms = [];
+  const fuckingBottomsFunc = data => {
+    if (data[0] < 0 && data[1] < 0 && data[2] > 0) {
+      return true;
+    }
+    if (data[0] < 0 && data[1] < 0 && data[2] < 0 && data[3] < 0) {
+      if (data[0] < data[1] * 1.1 && data[1] < data[2] * 1.5 && data[3] < data[2] * 1.5) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   const symbols = Object.keys(open);
   for (const s of symbols) {
@@ -210,17 +236,17 @@ const findPoint = (open, close) => {
     if (downsFunc(difs)) {
       downs.push(s);
     }
-    if (uupsFunc(difs)) {
-      uups.push(s);
+    if (fastUpsFunc(difs)) {
+      fastUps.push(s);
     }
-    if (ddownsFunc(difs)) {
-      ddowns.push(s);
+    if (fastDownsFunc(difs)) {
+      fastDowns.push(s);
     }
-    if (dupsFunc(difs)) {
-      dups.push(s);
+    if (slowUpsFunc(difs)) {
+      slowUps.push(s);
     }
-    if (udownsFunc(difs)) {
-      udowns.push(s);
+    if (slowDownsFunc(difs)) {
+      slowDowns.push(s);
     }
     if (topsFunc(difs)) {
       tops.push(s);
@@ -228,9 +254,18 @@ const findPoint = (open, close) => {
     if (bottomsFunc(difs)) {
       bottoms.push(s);
     }
+    if (fuckingTopsFunc(difs)) {
+      fuckingTops.push(s);
+    }
+    if (s === 'YFIUSDT') {
+      console.log(difs);
+    }
+    if (fuckingBottomsFunc(difs)) {
+      fuckingBottoms.push(s);
+    }
   }
 
-  return { ups, downs, uups, ddowns, dups, udowns, tops, bottoms };
+  return { ups, downs, fastUps, fastDowns, slowUps, slowDowns, tops, bottoms, fuckingTops, fuckingBottoms };
 };
 
 const main = async () => {
@@ -240,20 +275,37 @@ const main = async () => {
   const openMA = movingAvg(symbolOpen);
   const closeMA = movingAvg(symbolClose);
   const newSymbol = findNew(symbolOpen);
-  const { ups, downs, uups, ddowns, dups, udowns, tops, bottoms } = findPoint(openMA, closeMA);
+  const { ups, downs, fastUps, fastDowns, slowUps, slowDowns, tops, bottoms, fuckingTops, fuckingBottoms } = findPoint(
+    openMA,
+    closeMA
+  );
 
   console.log(`总数: ${Object.keys(openMA).length}`);
   console.log(`新币: ${newSymbol.length}`);
   console.log(`持续上涨: ${ups.length}`);
   console.log(`持续下跌: ${downs.length}`);
-  console.log(`暴力上涨: ${uups.length}`);
-  console.log(`暴力下跌: ${ddowns.length}`);
-  console.log(`微弱上涨: ${dups.length}`);
-  console.log(`微弱下跌: ${udowns.length}`);
+  console.log(`暴力上涨: ${fastUps.length}`);
+  console.log(`暴力下跌: ${fastDowns.length}`);
+  console.log(`微弱上涨: ${slowUps.length}`);
+  console.log(`微弱下跌: ${slowDowns.length}`);
   console.log(`涨到顶部: ${tops.length}`);
   console.log(`跌到底部: ${bottoms.length}`);
+  console.log(`确认顶部: ${fuckingTops.length}`);
+  console.log(`确认底部: ${fuckingBottoms.length}`);
 
-  console.log({ newSymbol, ups, downs, uups, ddowns, dups, udowns, tops, bottoms });
+  console.log({
+    newSymbol,
+    ups,
+    downs,
+    fastUps,
+    fastDowns,
+    slowUps,
+    slowDowns,
+    tops,
+    bottoms,
+    fuckingTops,
+    fuckingBottoms
+  });
 };
 
 main();
