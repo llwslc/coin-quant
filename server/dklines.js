@@ -88,7 +88,7 @@ const getKlines = async (symbol, startTime = 0) => {
       );
     }
 
-    logger.info(`[${symbol}] INSERT END ${new Date(startTime).toLocaleString()}`);
+    logger.info(`[${symbol}] INSERT END ${new Date(maxOpenTime).toLocaleString()}`);
     return await getKlines(symbol, maxOpenTime);
   } catch (error) {
     logger.error('GetKlines', new Date(startTime).toLocaleString(), error.message ? error.message : error);
