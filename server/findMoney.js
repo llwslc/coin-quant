@@ -222,15 +222,15 @@ const findPoint = (open, close) => {
     if (udownsFunc(difs)) {
       udowns.push(s);
     }
-    if (upsFunc(difs)) {
-      ups.push(s);
+    if (topsFunc(difs)) {
+      tops.push(s);
     }
     if (bottomsFunc(difs)) {
       bottoms.push(s);
     }
   }
 
-  return { ups, downs, uups, ddowns, dups, udowns, ups, bottoms };
+  return { ups, downs, uups, ddowns, dups, udowns, tops, bottoms };
 };
 
 const main = async () => {
@@ -240,20 +240,20 @@ const main = async () => {
   const openMA = movingAvg(symbolOpen);
   const closeMA = movingAvg(symbolClose);
   const newSymbol = findNew(symbolOpen);
-  const { ups, downs, uups, ddowns, dups, udowns, ups, bottoms } = findPoint(openMA, closeMA);
+  const { ups, downs, uups, ddowns, dups, udowns, tops, bottoms } = findPoint(openMA, closeMA);
 
-  console.log(`总数:${Object.keys(openMA).length}`);
-  console.log(`新币:${newSymbol.length}`);
-  console.log(`持续上涨:${ups.length}`);
-  console.log(`持续下跌:${downs.length}`);
-  console.log(`暴力上涨:${uups.length}`);
-  console.log(`暴力下跌:${ddowns.length}`);
-  console.log(`微弱上涨:${dups.length}`);
-  console.log(`微弱下跌:${udowns.length}`);
-  console.log(`涨到顶部:${tops.length}`);
-  console.log(`跌到底部:${bottoms.length}`);
+  console.log(`总数: ${Object.keys(openMA).length}`);
+  console.log(`新币: ${newSymbol.length}`);
+  console.log(`持续上涨: ${ups.length}`);
+  console.log(`持续下跌: ${downs.length}`);
+  console.log(`暴力上涨: ${uups.length}`);
+  console.log(`暴力下跌: ${ddowns.length}`);
+  console.log(`微弱上涨: ${dups.length}`);
+  console.log(`微弱下跌: ${udowns.length}`);
+  console.log(`涨到顶部: ${tops.length}`);
+  console.log(`跌到底部: ${bottoms.length}`);
 
-  console.log({ newSymbol, ups, downs, uups, ddowns, dups, udowns, ups, bottoms });
+  console.log({ newSymbol, ups, downs, uups, ddowns, dups, udowns, tops, bottoms });
 };
 
 main();
