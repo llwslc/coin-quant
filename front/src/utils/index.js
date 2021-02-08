@@ -350,6 +350,7 @@ export const getEchartsOpt = (data, symbol) => {
       data: ['K', 'OMA7', 'CMA7'],
       top: '3%'
     },
+    color: [oma7Color, cma7Color],
     grid: {
       top: '15%',
       left: '10%',
