@@ -14,7 +14,7 @@ const Config = {
 const devConfig = {};
 if (env === 'development') {
   devConfig.env = env;
-  devConfig.backend = 'http://localhost:8080/api/klines';
+  devConfig.backend = 'http://localhost:8888/api/klines';
 }
 
 export default Object.assign(Config, devConfig);
