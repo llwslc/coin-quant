@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "git clone git@github.com:llwslc/coin-quant-db.git db",
+    "postinstall": "sh dbInit.sh",
+    "pm2:app": "pm2 start app.js --name coin-sv",
+    "pm2:sp": "pm2 start spider.js --name coin-sp",
     "kETH": "SYMBOL=ETHUSDT node klines",
     "kBTC": "SYMBOL=BTCUSDT node klines"
   },
@@ -21,6 +23,7 @@
     "axios": "^0.21.0",
     "express": "^4.17.1",
     "log4js": "^6.3.0",
+    "node-schedule": "^2.0.0",
     "sqlite3": "^5.0.0"
   }
 }
