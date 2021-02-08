@@ -25,6 +25,10 @@ const HomeRow = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+
+  .ant-tag {
+    margin-bottom: 8px;
+  }
 `;
 
 const HomeSelectSymbol = styled.div`
