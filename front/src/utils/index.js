@@ -169,6 +169,42 @@ export const findPoint = data => {
     }
     return false;
   };
+  // 上涨买点
+  const upBuys = [];
+  const upBuysFunc = (open, close, oma, cma) => {
+    const min = Math.min(open[0], close[0]);
+    if (min < cma[0]) {
+      return true;
+    }
+    return false;
+  };
+  // 下跌买点
+  const downBuys = [];
+  const downBuysFunc = (open, close, oma, cma) => {
+    const min = Math.min(open[0], close[0]);
+    if (min < cma[0] * 0.9) {
+      return true;
+    }
+    return false;
+  };
+  // 上涨卖点
+  const upSells = [];
+  const upSellsFunc = (open, close, oma, cma) => {
+    const max = Math.max(open[0], close[0]);
+    if (max > cma[0] * 1.1) {
+      return true;
+    }
+    return false;
+  };
+  // 下跌卖点
+  const downSells = [];
+  const downSellsFunc = (open, close, oma, cma) => {
+    const max = Math.max(open[0], close[0]);
+    if (max > cma[0]) {
+      return true;
+    }
+    return false;
+  };
 
   const symbols = Object.keys(data);
   for (const s of symbols) {
@@ -179,18 +215,32 @@ export const findPoint = data => {
       open.push(_[1]);
       close.push(_[2]);
     }
-    const o = movingAvg(open).reverse();
-    const c = movingAvg(close).reverse();
+    const orv = [...open].reverse();
+    const crv = [...close].reverse();
+    const oma = movingAvg(open).reverse();
+    const cma = movingAvg(close).reverse();
 
-    const difs = o.map((_, i) => {
-      return _ - c[i];
+    const difs = oma.map((_, i) => {
+      return _ - cma[i];
     });
 
     if (upsFunc(difs)) {
       ups.push(s);
+      if (upBuysFunc(orv, crv, oma, cma)) {
+        upBuys.push(s);
+      }
+      if (upSellsFunc(orv, crv, oma, cma)) {
+        upSells.push(s);
+      }
     }
     if (downsFunc(difs)) {
       downs.push(s);
+      if (downBuysFunc(orv, crv, oma, cma)) {
+        downBuys.push(s);
+      }
+      if (downSellsFunc(orv, crv, oma, cma)) {
+        downSells.push(s);
+      }
     }
     if (fastUpsFunc(difs)) {
       fastUps.push(s);
@@ -218,7 +268,22 @@ export const findPoint = data => {
     }
   }
 
-  return { ups, downs, fastUps, fastDowns, slowUps, slowDowns, tops, bottoms, fuckingTops, fuckingBottoms };
+  return {
+    ups,
+    upBuys,
+    upSells,
+    downs,
+    downBuys,
+    downSells,
+    fastUps,
+    fastDowns,
+    slowUps,
+    slowDowns,
+    tops,
+    bottoms,
+    fuckingTops,
+    fuckingBottoms
+  };
 };
 
 export const getEchartsOpt = (data, symbol) => {
@@ -228,19 +293,6 @@ export const getEchartsOpt = (data, symbol) => {
   const downBorderColor = '#8A0000';
   const oma7Color = '#FFD700';
   const cma7Color = '#FF00FF';
-
-  const splitData = rawData => {
-    const categoryData = [];
-    const values = [];
-    for (const d of rawData) {
-      categoryData.push(new Date(d[0]).toLocaleDateString());
-      values.push(d.slice(1));
-    }
-    return {
-      categoryData,
-      values
-    };
-  };
 
   const calculateMA = (values, dayCount = 7, open = false) => {
     const result = [];
@@ -256,6 +308,27 @@ export const getEchartsOpt = (data, symbol) => {
       result.push(sum / dayCount);
     }
     return result;
+  };
+
+  const splitData = rawData => {
+    const categoryData = [];
+    const values = [];
+    let oma7 = [];
+    let cma7 = [];
+    for (const d of rawData) {
+      categoryData.push(new Date(d[0]).toLocaleDateString());
+      values.push(d.slice(1));
+    }
+
+    oma7 = calculateMA(values, 7, true);
+    cma7 = calculateMA(values);
+
+    return {
+      categoryData,
+      values,
+      oma7,
+      cma7
+    };
   };
 
   const optData = splitData(data);
@@ -329,7 +402,7 @@ export const getEchartsOpt = (data, symbol) => {
       {
         name: 'OMA7',
         type: 'line',
-        data: calculateMA(optData.values, 7, true),
+        data: optData.oma7,
         showSymbol: false,
         lineStyle: {
           color: oma7Color
@@ -338,7 +411,7 @@ export const getEchartsOpt = (data, symbol) => {
       {
         name: 'CMA7',
         type: 'line',
-        data: calculateMA(optData.values, 7),
+        data: optData.cma7,
         showSymbol: false,
         lineStyle: {
           color: cma7Color
