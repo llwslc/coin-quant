@@ -182,10 +182,6 @@ export const findPoint = data => {
     const o = movingAvg(open).reverse();
     const c = movingAvg(close).reverse();
 
-    if (s === 'BTCUSDT') {
-      console.log({ d, o, c });
-    }
-
     const difs = o.map((_, i) => {
       return _ - c[i];
     });
@@ -268,6 +264,7 @@ export const getEchartsOpt = (data, symbol) => {
     title: {
       text: symbol,
       link: `${config.binanceUrl.base}${symbol}${config.binanceUrl.query}`,
+      top: '3%',
       left: '5%'
     },
     tooltip: {
@@ -277,13 +274,14 @@ export const getEchartsOpt = (data, symbol) => {
       }
     },
     legend: {
-      data: ['K', 'OMA7', 'CMA7']
+      data: ['K', 'OMA7', 'CMA7'],
+      top: '3%'
     },
     grid: {
       top: '15%',
       left: '10%',
       right: '10%',
-      bottom: '15%'
+      bottom: '20%'
     },
     xAxis: {
       type: 'category',
@@ -305,14 +303,14 @@ export const getEchartsOpt = (data, symbol) => {
     dataZoom: [
       {
         type: 'inside',
-        start: 50,
+        start: 0,
         end: 100
       },
       {
         show: true,
         type: 'slider',
-        top: '90%',
-        start: 50,
+        top: '87%',
+        start: 0,
         end: 100
       }
     ],
