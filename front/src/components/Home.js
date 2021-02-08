@@ -46,7 +46,11 @@ function App() {
   const [alls, setAlls] = useState([]);
   const [news, setNews] = useState([]);
   const [ups, setUps] = useState([]);
+  const [upBuys, setUpBuys] = useState([]);
+  const [upSells, setUpSells] = useState([]);
   const [downs, setDowns] = useState([]);
+  const [downBuys, setDownBuys] = useState([]);
+  const [downSells, setDownSells] = useState([]);
   const [fastUps, setFastUps] = useState([]);
   const [fastDowns, setFastDowns] = useState([]);
   const [slowUps, setSlowUps] = useState([]);
@@ -65,6 +69,12 @@ function App() {
 
   const types = {
     favs: '自选',
+    upBuys: '上涨买点',
+    downBuys: '下跌买点',
+    upSells: '上涨卖点',
+    downSells: '下跌卖点',
+    fuckingTops: '确认顶部',
+    fuckingBottoms: '确认底部',
     ups: '持续上涨',
     downs: '持续下跌',
     fastUps: '暴力上涨',
@@ -73,15 +83,17 @@ function App() {
     slowDowns: '微弱下跌',
     tops: '处于顶部',
     bottoms: '处于底部',
-    fuckingTops: '确认顶部',
-    fuckingBottoms: '确认底部',
     alls: '全部',
     news: '新币'
   };
   const state = {
     favs,
     ups,
+    upBuys,
+    upSells,
     downs,
+    downBuys,
+    downSells,
     fastUps,
     fastDowns,
     slowUps,
@@ -101,7 +113,11 @@ function App() {
       const news = findNew(data, 20);
       const {
         ups,
+        upBuys,
+        upSells,
         downs,
+        downBuys,
+        downSells,
         fastUps,
         fastDowns,
         slowUps,
@@ -116,7 +132,11 @@ function App() {
 
       setAllData(data);
       setUps(ups);
+      setUpBuys(upBuys);
+      setUpSells(upSells);
       setDowns(downs);
+      setDownBuys(downBuys);
+      setDownSells(downSells);
       setFastUps(fastUps);
       setFastDowns(fastDowns);
       setSlowUps(slowUps);
