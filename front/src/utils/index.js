@@ -344,6 +344,32 @@ export const getEchartsOpt = (data, symbol) => {
       trigger: 'axis',
       axisPointer: {
         type: 'cross'
+      },
+      formatter: function (params) {
+        const k = params[0];
+        const oma7 = params[1];
+        const cma7 = params[2];
+
+        const time = k.axisValue;
+        const open = Number(k.data[1]);
+        const close = Number(k.data[2]);
+        const low = Number(k.data[3]);
+        const high = Number(k.data[4]);
+        const change = `${(((close - open) / open) * 100).toFixed(2)} %`;
+        const amplitude = `${(((high - low) / low) * 100).toFixed(2)} %`;
+        const oma = oma7.data.toPrecision(open.toString().length - 1);
+        const cma = cma7.data.toPrecision(open.toString().length - 1);
+        return `<div>${time}</div>
+        <div><span style="color: ${k.color}">OPEN: </span>${open}</div>
+        <div><span style="color: ${k.color}">CLOSE: </span>${close}</div>
+        <div><span style="color: ${k.color}">LOW: </span>${low}</div>
+        <div><span style="color: ${k.color}">HIGH: </span>${high}</div>
+        <div><span style="color: ${k.color}">CHANGE: </span>${change}</div>
+        <div><span style="color: ${k.color}">AMPLITUDE: </span>${amplitude}</div>
+        <br />
+        <div><span style="color: ${oma7.color}">OMA7: </span>${oma}</div>
+        <div><span style="color: ${cma7.color}">CMA7: </span>${cma}</div>
+        `;
       }
     },
     legend: {
