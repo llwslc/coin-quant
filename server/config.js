@@ -5,7 +5,7 @@ module.exports = {
   },
 
   express: {
-    port: 8080
+    port: 8888
   },
 
   fullNode: 'https://api.trongrid.io/',
