@@ -62,7 +62,10 @@ const getKlines = async (symbol, startTime = 0) => {
         logger.info(`[${symbol}] DELIST`);
       }
 
-      return checkData(symbol);
+      const data = await db.allSync(`SELECT * FROM klines WHERE symbol='${symbol}';`);
+      if (data.length) {
+        return checkData(symbol);
+      }
     }
 
     const colNames = [
