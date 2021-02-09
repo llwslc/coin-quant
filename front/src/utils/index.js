@@ -357,8 +357,8 @@ export const getEchartsOpt = (data, symbol) => {
         const high = Number(k.data[4]);
         const change = `${(((close - open) / open) * 100).toFixed(2)} %`;
         const amplitude = `${(((high - low) / low) * 100).toFixed(2)} %`;
-        const oma = oma7.data.toPrecision(open.toString().length - 1);
-        const cma = cma7.data.toPrecision(open.toString().length - 1);
+        const oma = oma7.data === '-' ? oma7.data : oma7.data.toPrecision(open.toString().length - 1);
+        const cma = cma7.data === '-' ? cma7.data : cma7.data.toPrecision(open.toString().length - 1);
         return `<div>${time}</div>
         <div><span style="color: ${k.color}">OPEN: </span>${open}</div>
         <div><span style="color: ${k.color}">CLOSE: </span>${close}</div>
