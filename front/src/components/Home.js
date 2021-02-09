@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, StarFilled } from '@ant-design/icons';
 import { Button, Divider, Layout, Select, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
@@ -77,6 +77,8 @@ function App() {
     downBuys: '下跌买点',
     upSells: '上涨卖点',
     downSells: '下跌卖点',
+    tops: '处于顶部',
+    bottoms: '处于底部',
     fuckingTops: '确认顶部',
     fuckingBottoms: '确认底部',
     ups: '持续上涨',
@@ -85,8 +87,6 @@ function App() {
     fastDowns: '暴力下跌',
     slowUps: '微弱上涨',
     slowDowns: '微弱下跌',
-    tops: '处于顶部',
-    bottoms: '处于底部',
     alls: '全部',
     news: '新币'
   };
@@ -244,6 +244,7 @@ function App() {
               return (
                 <div key={_}>
                   <Button type={curSymbol === _ ? 'primary' : 'link'} onClick={() => changeCurSymbol(_)}>
+                    {favs.includes(_) && <StarFilled />}
                     {_}
                   </Button>
                 </div>
