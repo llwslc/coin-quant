@@ -10,7 +10,7 @@ logger.info(`Spider Run!`);
 schedule.scheduleJob('10 9 * * *', () => {
   exec('node dklines', (error, stdout, stderr) => {
     if (error) {
-      logger.error(`[dklines] Error: ${error}`);
+      logger.error(`[dbBackUp] Error: ${error} | ${stdout}`);
       return;
     }
     if (stderr) {
@@ -24,7 +24,7 @@ schedule.scheduleJob('10 9 * * *', () => {
 schedule.scheduleJob('10 10 * * *', () => {
   exec('sh dbBackup.sh', (error, stdout, stderr) => {
     if (error) {
-      logger.error(`[dbBackUp] Error: ${error}`);
+      logger.error(`[dbBackUp] Error: ${error} | ${stdout}`);
       return;
     }
     if (stderr) {
