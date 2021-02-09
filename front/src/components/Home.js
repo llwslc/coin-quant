@@ -134,23 +134,34 @@ function App() {
 
       const favs = readFavorites();
 
+      const sortByVol = symbols => {
+        return [...symbols].sort((s1, s2) => {
+          const calcVol = s => {
+            const d = data[s];
+            const _ = d[d.length - 1];
+            return Number(_[1]) * Number(_[5]);
+          };
+          return calcVol(s2) - calcVol(s1);
+        });
+      };
+
       setAllData(data);
-      setUps(ups);
-      setUpBuys(upBuys);
-      setUpSells(upSells);
-      setDowns(downs);
-      setDownBuys(downBuys);
-      setDownSells(downSells);
-      setFastUps(fastUps);
-      setFastDowns(fastDowns);
-      setSlowUps(slowUps);
-      setSlowDowns(slowDowns);
-      setTops(tops);
-      setBottoms(bottoms);
-      setFuckingTops(fuckingTops);
-      setFuckingBottoms(fuckingBottoms);
-      setAlls(Object.keys(data));
-      setNews(news);
+      setUps(sortByVol(ups));
+      setUpBuys(sortByVol(upBuys));
+      setUpSells(sortByVol(upSells));
+      setDowns(sortByVol(downs));
+      setDownBuys(sortByVol(downBuys));
+      setDownSells(sortByVol(downSells));
+      setFastUps(sortByVol(fastUps));
+      setFastDowns(sortByVol(fastDowns));
+      setSlowUps(sortByVol(slowUps));
+      setSlowDowns(sortByVol(slowDowns));
+      setTops(sortByVol(tops));
+      setBottoms(sortByVol(bottoms));
+      setFuckingTops(sortByVol(fuckingTops));
+      setFuckingBottoms(sortByVol(fuckingBottoms));
+      setAlls(sortByVol(Object.keys(data)));
+      setNews(sortByVol(news));
       setFavs(favs);
 
       const clientWidth = document.body.clientWidth;
