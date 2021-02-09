@@ -111,19 +111,34 @@ const main = async () => {
   const symbols = [];
   for (const d of data) {
     const symbol = d.symbol;
-    const fiat = 'USDT';
-    if (symbol.indexOf(fiat) === symbol.length - fiat.length) {
-      const moreFiat = 'USD';
+    const fiat = 'USD';
+    const tFiat = 'USDT';
+    if (symbol.indexOf(tFiat) === symbol.length - tFiat.length) {
       const upFiat = 'UPUSDT';
       const downFiat = 'DOWNUSDT';
       const bullFiat = 'BULLUSDT';
       const bearFiat = 'BEARUSDT';
       if (
-        symbol.match(new RegExp(moreFiat, 'g')).length === 1 &&
+        symbol.match(new RegExp(fiat, 'g')).length === 1 &&
         symbol.indexOf(upFiat) === -1 &&
         symbol.indexOf(downFiat) === -1 &&
         symbol.indexOf(bullFiat) === -1 &&
         symbol.indexOf(bearFiat) === -1 &&
+        !delistSymbols.includes(symbol)
+      ) {
+        symbols.push(symbol);
+      }
+    }
+    const bFiat = 'BUSD';
+    if (symbol.indexOf(bFiat) === symbol.length - bFiat.length) {
+      const pair = symbol.split(bFiat)[0];
+      const bullFiat = 'BULLBUSD';
+      const bearFiat = 'BEARBUSD';
+      if (
+        symbol.match(new RegExp(fiat, 'g')).length === 1 &&
+        symbol.indexOf(bullFiat) === -1 &&
+        symbol.indexOf(bearFiat) === -1 &&
+        !symbols.includes(`${pair}${tFiat}`) &&
         !delistSymbols.includes(symbol)
       ) {
         symbols.push(symbol);
