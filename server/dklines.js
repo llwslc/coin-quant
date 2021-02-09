@@ -108,7 +108,11 @@ const main = async () => {
   }
 
   const data = await getSymbols();
+  const allSymbols = [];
   const symbols = [];
+  for (const d of data) {
+    allSymbols.push(d.symbol);
+  }
   for (const d of data) {
     const symbol = d.symbol;
     const fiat = 'USD';
@@ -138,7 +142,7 @@ const main = async () => {
         symbol.match(new RegExp(fiat, 'g')).length === 1 &&
         symbol.indexOf(bullFiat) === -1 &&
         symbol.indexOf(bearFiat) === -1 &&
-        !symbols.includes(`${pair}${tFiat}`) &&
+        !allSymbols.includes(`${pair}${tFiat}`) &&
         !delistSymbols.includes(symbol)
       ) {
         symbols.push(symbol);
