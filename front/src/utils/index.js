@@ -337,6 +337,9 @@ export const getEchartsOpt = (data, symbol) => {
     title: {
       text: symbol,
       link: `${config.binanceUrl.base}${symbol}${config.binanceUrl.query}`,
+      textStyle: {
+        fontSize: 12
+      },
       top: '3%',
       left: '5%'
     },
@@ -374,14 +377,15 @@ export const getEchartsOpt = (data, symbol) => {
     },
     legend: {
       data: ['K', 'OMA7', 'CMA7'],
-      top: '3%'
+      top: '3%',
+      right: '10%'
     },
     color: [oma7Color, cma7Color],
     grid: {
       top: '15%',
       left: '10%',
       right: '10%',
-      bottom: '20%'
+      bottom: '10%'
     },
     xAxis: {
       type: 'category',
@@ -403,13 +407,6 @@ export const getEchartsOpt = (data, symbol) => {
     dataZoom: [
       {
         type: 'inside',
-        start: 0,
-        end: 100
-      },
-      {
-        show: true,
-        type: 'slider',
-        top: '87%',
         start: 0,
         end: 100
       }
