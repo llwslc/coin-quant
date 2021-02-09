@@ -153,7 +153,8 @@ function App() {
       setNews(news);
       setFavs(favs);
 
-      const echartsHeight = document.body.clientWidth / 2 > 400 ? 400 : document.body.clientWidth / 2;
+      const clientWidth = document.body.clientWidth;
+      const echartsHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : (clientWidth / 4) * 3;
       setEchartsHeight(echartsHeight);
     };
     fetchData();
