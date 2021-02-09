@@ -58,8 +58,8 @@ app.get('/api/klines', async (req, res) => {
 
         const open = lastObj[2];
         const close = p.price;
-        const low = open > close ? close : open;
-        const high = open > close ? open : close;
+        const low = Number(open) > Number(close) ? close : open;
+        const high = Number(open) > Number(close) ? open : close;
         const volume = lastObj[5];
 
         const latestObj = [lastObj[0] + daySec, open, close, low, high, volume];
