@@ -200,6 +200,19 @@ function App() {
     }
   };
 
+  const getName = _ => {
+    const fait1 = 'USDT';
+    const fait2 = 'BUSD';
+    if (_.split(fait1).length > 1) {
+      return _.split(fait1)[0];
+    }
+    if (_.split(fait2).length > 1) {
+      return _.split(fait2)[0];
+    }
+
+    return _;
+  };
+
   return (
     <Layout>
       <HomeMain>
@@ -242,7 +255,7 @@ function App() {
                 return (
                   <div key={_}>
                     <Tag closable onClose={() => removeFavs(_)} onClick={() => changeCurSymbol(_)}>
-                      {_}
+                      {getName(_)}
                     </Tag>
                   </div>
                 );
@@ -254,10 +267,9 @@ function App() {
             {state[curType].map(_ => {
               return (
                 <div key={_}>
-                  <Button type={curSymbol === _ ? 'primary' : 'link'} onClick={() => changeCurSymbol(_)}>
-                    {favs.includes(_) && <StarFilled />}
-                    {_}
-                  </Button>
+                  <Tag color={curSymbol === _ ? '#177ddc' : ''} onClick={() => changeCurSymbol(_)}>
+                    {favs.includes(_) && <StarFilled />} {getName(_)}
+                  </Tag>
                 </div>
               );
             })}
