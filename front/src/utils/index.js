@@ -191,7 +191,7 @@ export const findPoint = data => {
   const upSells = [];
   const upSellsFunc = (open, close, oma, cma) => {
     const max = Math.max(open[0], close[0]);
-    if (max > cma[0] * 1.1) {
+    if (max > cma[0] * 1.2) {
       return true;
     }
     return false;
