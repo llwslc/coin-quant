@@ -190,6 +190,11 @@ function App() {
     saveFavorites(_favs);
   };
 
+  const changeFav = _ => {
+    setSearchSymbol(_);
+    changeCurSymbol(_);
+  };
+
   const removeFavs = _ => {
     const idx = favs.indexOf(_);
     if (idx > -1) {
@@ -234,7 +239,7 @@ function App() {
           <>
             <HomeRow>
               <HomeSelectSymbol>
-                <Select showSearch placeholder="" onChange={_ => setSearchSymbol(_)}>
+                <Select showSearch placeholder="" onChange={_ => changeFav(_)}>
                   {alls.map(_ => (
                     <Option key={_} value={_}>
                       {_}
