@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const axios = require('axios');
 const log4js = require('log4js');
 const sqlite = require('./sqlite.js');
@@ -18,6 +19,8 @@ sqlite(config.sqlite.dklines)
   .catch(_ => {
     logger.error(_);
   });
+
+app.use(bodyParser.json());
 
 app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -70,6 +73,38 @@ app.get('/api/klines', async (req, res) => {
     logger.error('[klines]', error.message ? error.message : error);
   }
   res.send(result);
+});
+
+app.get('/api/favs', async (req, res) => {
+  let result = [];
+  try {
+    const name = req.query.name;
+    if (name) {
+      const favs = await db.getSync(`SELECT * FROM favs WHERE name = '${name}';`);
+      if (favs.length) {
+        result = JSON.parse(favs[0].symbols);
+      }
+    }
+  } catch (error) {
+    logger.error('[favsGet]', error.message ? error.message : error);
+  }
+  res.send(result);
+});
+
+app.post('/api/favs', async (req, res) => {
+  const result = { code: 200, msg: '' };
+  try {
+    const name = req.body.name;
+    const favs = req.body.favs;
+    if (name && favs) {
+      await db.runSync(`REPLACE INTO favs (name, symbols) VALUES ('${name}', '${JSON.stringify(favs)}') ;`);
+    } else {
+      result.code = 401;
+    }
+  } catch (error) {
+    logger.error('[favsSet]', error.message ? error.message : error);
+  }
+  res.status(result.code).send({});
 });
 
 app.listen(port, () => {
