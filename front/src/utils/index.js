@@ -293,6 +293,7 @@ export const getEchartsOpt = (data, symbol) => {
   const downBorderColor = '#8A0000';
   const oma7Color = '#FFD700';
   const cma7Color = '#FF00FF';
+  const crossColor = '#FFFFFF';
 
   const calculateMA = (values, dayCount = 7, open = false) => {
     const result = [];
@@ -331,7 +332,35 @@ export const getEchartsOpt = (data, symbol) => {
     };
   };
 
+  const calcCross = (rawData, dayCount = 7) => {
+    const { values, oma7 } = rawData;
+    let crossData = '-';
+    let crossChange = '-';
+
+    if (values.length < dayCount + 1) {
+      return {
+        crossData,
+        crossChange
+      };
+    }
+
+    const cross = oma7[oma7.length - 1];
+    const idx = values.length - 1;
+    const _values = values.slice(idx - dayCount + 1, idx);
+    const result = dayCount * cross - _values.reduce((acc, cur) => acc + Number(cur[1]), 0);
+
+    crossData = Number(result.toPrecision(Number(_values[0][1]).toString().length - 1));
+    crossChange = `${(((crossData - Number(values[idx][0])) / Number(values[idx][0])) * 100).toFixed(2)} %`;
+
+    return {
+      crossData,
+      crossChange
+    };
+  };
+
   const optData = splitData(data);
+  // golden/death cross
+  const { crossData, crossChange } = calcCross(optData);
 
   return {
     title: {
@@ -360,8 +389,9 @@ export const getEchartsOpt = (data, symbol) => {
         const high = Number(k.data[4]);
         const change = `${(((close - open) / open) * 100).toFixed(2)} %`;
         const amplitude = `${(((high - low) / low) * 100).toFixed(2)} %`;
-        const oma = oma7.data === '-' ? oma7.data : oma7.data.toPrecision(open.toString().length - 1);
-        const cma = cma7.data === '-' ? cma7.data : cma7.data.toPrecision(open.toString().length - 1);
+        const oma = oma7.data === '-' ? oma7.data : Number(oma7.data.toPrecision(open.toString().length - 1));
+        const cma = cma7.data === '-' ? cma7.data : Number(cma7.data.toPrecision(open.toString().length - 1));
+
         return `<div>${time}</div>
         <div><span style="color: ${k.color}">OPEN: </span>${open}</div>
         <div><span style="color: ${k.color}">CLOSE: </span>${close}</div>
@@ -372,6 +402,9 @@ export const getEchartsOpt = (data, symbol) => {
         <br />
         <div><span style="color: ${oma7.color}">OMA7: </span>${oma}</div>
         <div><span style="color: ${cma7.color}">CMA7: </span>${cma}</div>
+        <br />
+        <div><span style="color: ${k.color}">CORSS: </span>${crossData}</div>
+        <div><span style="color: ${k.color}">CHANGE: </span>${crossChange}</div>
         `;
       }
     },
@@ -421,6 +454,15 @@ export const getEchartsOpt = (data, symbol) => {
           color0: downColor,
           borderColor: upBorderColor,
           borderColor0: downBorderColor
+        },
+        markLine: {
+          lineStyle: {
+            type: 'dashed',
+            color: crossColor,
+            opacity: 0.8
+          },
+          animation: false,
+          data: [{ yAxis: `${crossData}` }]
         }
       },
       {
