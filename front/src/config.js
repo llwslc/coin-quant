@@ -1,7 +1,11 @@
 const env = process.env.REACT_APP_ENV;
 
 const Config = {
-  backend: '/api/klines',
+  backend: {
+    base: '/',
+    klines: 'api/klines',
+    favs: 'api/favs'
+  },
   localStorage: {
     favKey: 'favorites'
   },
@@ -14,7 +18,11 @@ const Config = {
 const devConfig = {};
 if (env === 'development') {
   devConfig.env = env;
-  devConfig.backend = 'http://localhost:8888/api/klines';
+  devConfig.backend = {
+    base: 'http://localhost:8888/',
+    klines: 'api/klines',
+    favs: 'api/favs'
+  };
 }
 
 export default Object.assign(Config, devConfig);
