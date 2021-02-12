@@ -403,8 +403,8 @@ export const getEchartsOpt = (data, symbol) => {
         <div><span style="color: ${oma7.color}">OMA7: </span>${oma}</div>
         <div><span style="color: ${cma7.color}">CMA7: </span>${cma}</div>
         <br />
-        <div><span style="color: ${k.color}">CORSS: </span>${crossData}</div>
-        <div><span style="color: ${k.color}">CHANGE: </span>${crossChange}</div>
+        <div><span style="color: ${crossData > open ? upColor : downColor}">CORSS: </span>${crossData}</div>
+        <div><span style="color: ${crossData > open ? upColor : downColor}">CHANGE: </span>${crossChange}</div>
         `;
       }
     },
