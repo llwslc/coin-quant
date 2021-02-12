@@ -106,6 +106,16 @@ const db = async dbName => {
       );`);
     }
 
+    const favs = await dbObj.getSync(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'favs'`);
+    if (favs.length == 0) {
+      await dbObj.runSync(`CREATE TABLE "favs" (
+        "id"	INTEGER NOT NULL,
+        "name"	TEXT NOT NULL UNIQUE,
+        "symbols"	TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+      );`);
+    }
+
     return dbObj;
   } catch (error) {
     logger.error(`DB Error:`, error.message ? error.message : error);
