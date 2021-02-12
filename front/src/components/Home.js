@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import MD5 from 'md5.js';
 import styled from 'styled-components';
-import { PlusOutlined, StarFilled } from '@ant-design/icons';
-import { Button, Divider, Layout, Select, Tag, Typography } from 'antd';
+import {
+  PlusOutlined,
+  StarFilled,
+  CloudSyncOutlined,
+  CloudUploadOutlined,
+  CloudDownloadOutlined
+} from '@ant-design/icons';
+import { Button, Divider, Input, Layout, Modal, Select, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
 import { findNew, findPoint, getEchartsOpt, readFavorites, saveFavorites } from '../utils';
@@ -44,6 +51,26 @@ const HomeEcharts = styled.div`
   width: 100%;
 `;
 
+const HomeCloudFavsInput = styled.div`
+  display: flex;
+  justify-content: normal;
+
+  .ant-tag {
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+`;
+
+const HomeCloudFavsButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  .ant-btn {
+    width: 45%;
+  }
+`;
+
 function App() {
   const [allData, setAllData] = useState([]);
   const [favs, setFavs] = useState([]);
@@ -70,6 +97,10 @@ function App() {
   const [echartsOpt, setEchartsOpt] = useState({});
 
   const [echartsHeight, setEchartsHeight] = useState(300);
+  const [showUpdateFavs, setShowUpdateFavs] = useState(false);
+  const [favsKey, setFavsKey] = useState('');
+  const [favsSuccessMsg, setFavsSuccessMsg] = useState('');
+  const [favsErrMsg, setFavsErrMsg] = useState('');
 
   const types = {
     favs: '自选',
@@ -112,7 +143,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(config.backend);
+      const { data } = await axios.get(`${config.backend.base}${config.backend.klines}`);
 
       const news = findNew(data, 20);
       const {
@@ -218,6 +249,43 @@ function App() {
     return _;
   };
 
+  const showFavsModal = () => {
+    setFavsSuccessMsg('');
+    setFavsErrMsg('');
+    setShowUpdateFavs(true);
+  };
+
+  const downloadFavs = async () => {
+    try {
+      const { data } = await axios.get(`${config.backend.base}${config.backend.favs}`, {
+        params: {
+          name: new MD5().update(favsKey).digest('hex')
+        }
+      });
+      if (data) {
+        saveFavorites(data);
+        setFavs(data);
+      }
+      setFavsSuccessMsg('Success');
+      setFavsErrMsg('');
+    } catch (error) {
+      setFavsErrMsg(error.message ? error.message : error);
+    }
+  };
+
+  const uploadFavs = async () => {
+    try {
+      await axios.post(`${config.backend.base}${config.backend.favs}`, {
+        name: new MD5().update(favsKey).digest('hex'),
+        favs
+      });
+      setFavsSuccessMsg('Success');
+      setFavsErrMsg('');
+    } catch (error) {
+      setFavsErrMsg(error.message ? error.message : error);
+    }
+  };
+
   return (
     <Layout>
       <HomeMain>
@@ -252,6 +320,7 @@ function App() {
                   icon={<PlusOutlined />}
                   onClick={() => addFavs()}
                 />
+                <Button type="primary" icon={<CloudSyncOutlined />} onClick={() => showFavsModal()} />
               </HomeSelectSymbol>
             </HomeRow>
 
@@ -295,6 +364,39 @@ function App() {
           <Link href="#/help">Help</Link>
         </Footer>
       </HomeMain>
+
+      <Modal
+        title=""
+        footer={null}
+        bodyStyle={{ padding: 20 }}
+        width={240}
+        closable={false}
+        visible={showUpdateFavs}
+        onCancel={() => setShowUpdateFavs(false)}
+      >
+        <HomeCloudFavsInput>
+          <Input placeholder="key" value={favsKey} onChange={e => setFavsKey(e.target.value)} />
+        </HomeCloudFavsInput>
+
+        <HomeCloudFavsInput>{favsSuccessMsg && <Tag color="success">{favsSuccessMsg}</Tag>}</HomeCloudFavsInput>
+        <HomeCloudFavsInput>{favsErrMsg && <Tag color="error">{favsErrMsg}</Tag>}</HomeCloudFavsInput>
+
+        <HomeCloudFavsButton>
+          <Button
+            type="primary"
+            disabled={!favsKey.length}
+            icon={<CloudDownloadOutlined />}
+            onClick={() => downloadFavs()}
+          />
+          <Button
+            type="primary"
+            danger
+            disabled={!favsKey.length}
+            icon={<CloudUploadOutlined />}
+            onClick={() => uploadFavs()}
+          />
+        </HomeCloudFavsButton>
+      </Modal>
     </Layout>
   );
 }
