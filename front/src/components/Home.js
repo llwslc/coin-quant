@@ -333,7 +333,12 @@ function App() {
               {state[curType].map(_ => {
                 return (
                   <div key={_}>
-                    <Tag closable onClose={() => removeFavs(_)} onClick={() => changeCurSymbol(_)}>
+                    <Tag
+                      color={curSymbol === _ ? '#177ddc' : ''}
+                      closable
+                      onClose={() => removeFavs(_)}
+                      onClick={() => changeCurSymbol(_)}
+                    >
                       {getName(_)}
                     </Tag>
                   </div>
