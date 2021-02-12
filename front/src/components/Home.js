@@ -250,6 +250,7 @@ function App() {
   };
 
   const showFavsModal = () => {
+    setFavsKey('');
     setFavsSuccessMsg('');
     setFavsErrMsg('');
     setShowUpdateFavs(true);
@@ -262,12 +263,16 @@ function App() {
           name: new MD5().update(favsKey).digest('hex')
         }
       });
-      if (data) {
+      if (data.length) {
         saveFavorites(data);
         setFavs(data);
+
+        setFavsSuccessMsg('Success');
+        setFavsErrMsg('');
+      } else {
+        setFavsSuccessMsg('');
+        setFavsErrMsg('Name does not exist');
       }
-      setFavsSuccessMsg('Success');
-      setFavsErrMsg('');
     } catch (error) {
       setFavsErrMsg(error.message ? error.message : error);
     }
