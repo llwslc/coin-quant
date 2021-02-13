@@ -48,7 +48,7 @@ app.get('/api/klines', async (req, res) => {
 
     for (const k of klines) {
       const symbol = k.symbol;
-      const d = [k.openTime, k.open, k.close, k.low, k.high, k.volume];
+      const d = [k.openTime, k.open, k.close, k.low, k.high, k.QuoteAssetVolume];
       if (result[symbol]) {
         result[symbol].push(d);
       } else {
