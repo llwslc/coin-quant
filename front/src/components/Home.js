@@ -170,7 +170,7 @@ function App() {
           const calcVol = s => {
             const d = data[s];
             const _ = d[d.length - 1];
-            return Number(_[1]) * Number(_[5]);
+            return Number(_[5]);
           };
           return calcVol(s2) - calcVol(s1);
         });
