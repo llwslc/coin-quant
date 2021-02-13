@@ -41,7 +41,10 @@ app.get('/api/klines', async (req, res) => {
     const openTime = Date.now() - 20 * daySec;
     const klines = await db.allSync(`SELECT * FROM klines WHERE openTime > '${openTime}';`);
     const curPrices = await axios.get(config.priceUrl);
+    const dayVolume = await axios.get(config.volumeUrl);
     const { data: prices } = curPrices;
+    const { data: volumes } = dayVolume;
+    const volObj = {};
 
     for (const k of klines) {
       const symbol = k.symbol;
@@ -51,6 +54,10 @@ app.get('/api/klines', async (req, res) => {
       } else {
         result[symbol] = [d];
       }
+    }
+
+    for (const v of volumes) {
+      volObj[v.symbol] = v.quoteVolume;
     }
 
     for (const p of prices) {
@@ -63,7 +70,7 @@ app.get('/api/klines', async (req, res) => {
         const close = p.price;
         const low = Number(open) > Number(close) ? close : open;
         const high = Number(open) > Number(close) ? open : close;
-        const volume = lastObj[5];
+        const volume = volObj[symbol];
 
         const latestObj = [lastObj[0] + daySec, open, close, low, high, volume];
         result[symbol].push(latestObj);
