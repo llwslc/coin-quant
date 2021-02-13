@@ -1,5 +1,18 @@
 import config from '../config';
 
+export const getBaseAsset = _ => {
+  const fait1 = 'USDT';
+  const fait2 = 'BUSD';
+  if (_.split(fait1).length > 1) {
+    return _.split(fait1)[0];
+  }
+  if (_.split(fait2).length > 1) {
+    return _.split(fait2)[0];
+  }
+
+  return _;
+};
+
 export const readFavorites = () => {
   try {
     const favs = window.localStorage.getItem(config.localStorage.favKey);
@@ -282,7 +295,7 @@ export const findPoint = data => {
   };
 };
 
-export const getEchartsOpt = (data, symbol) => {
+export const getEcKlinesOpt = (data, symbol) => {
   const upColor = '#00DA3C';
   const upBorderColor = '#008F28';
   const downColor = '#EC0000';
@@ -480,5 +493,92 @@ export const getEchartsOpt = (data, symbol) => {
         }
       }
     ]
+  };
+};
+
+export const getEcVolsOpt = data => {
+  const splitData = rawData => {
+    const timeObj = {};
+    const symbols = Object.keys(rawData);
+    for (const s of symbols) {
+      const klines = rawData[s];
+      for (const k of klines) {
+        const time = k[0];
+        const vol = parseInt(k[5]);
+        const asset = getBaseAsset(s);
+
+        if (timeObj[time]) {
+          timeObj[time].push([asset, vol]);
+        } else {
+          timeObj[time] = [[asset, vol]];
+        }
+      }
+    }
+
+    const times = Object.keys(timeObj);
+
+    const timeline = [];
+    const opts = [];
+    for (const t of times) {
+      const title = new Date(parseInt(t)).toLocaleDateString();
+      const vols = [...timeObj[t]]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 20)
+        .reverse();
+      const opt = {
+        title: {
+          text: title,
+          textStyle: {
+            fontSize: 12
+          },
+          top: '3%',
+          left: '5%'
+        },
+        grid: {
+          top: '10%',
+          left: '10%',
+          right: '10%',
+          bottom: '15%'
+        },
+        dataset: {
+          source: [['symbol', 'vols'], ...vols]
+        },
+        xAxis: {
+          splitLine: { show: false },
+          axisLabel: {
+            formatter: function (value) {
+              return `${value / 1e9}B`;
+            }
+          }
+        },
+        yAxis: { type: 'category', boundaryGap: true },
+        series: {
+          type: 'bar',
+          encode: {
+            x: 'vols',
+            y: 'symbol'
+          }
+        }
+      };
+
+      opts.push(opt);
+      timeline.push(title);
+    }
+
+    return { timeline, opts };
+  };
+
+  const { timeline, opts } = splitData(data);
+
+  return {
+    timeline: {
+      data: timeline,
+      axisType: 'category',
+      playInterval: 1000,
+      currentIndex: timeline.length - 1,
+      left: 0,
+      right: 0
+    },
+    options: opts
   };
 };
