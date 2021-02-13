@@ -12,7 +12,7 @@ import {
 import { Button, Divider, Input, Layout, Modal, Select, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
-import { findNew, findPoint, getEchartsOpt, readFavorites, saveFavorites } from '../utils';
+import { getBaseAsset, findNew, findPoint, getEcKlinesOpt, getEcVolsOpt, readFavorites, saveFavorites } from '../utils';
 
 const { Footer } = Layout;
 const { Option } = Select;
@@ -23,6 +23,10 @@ const HomeMain = styled.div`
     margin-top: 100px;
     display: flex;
     justify-content: center;
+  }
+
+  .ant-divider-horizontal {
+    margin: 0;
   }
 `;
 
@@ -94,9 +98,11 @@ function App() {
   const [searchSymbol, setSearchSymbol] = useState('');
   const [curType, setCurType] = useState('favs');
   const [curSymbol, setCurSymbol] = useState('');
-  const [echartsOpt, setEchartsOpt] = useState({});
+  const [ecKlinesOpt, setEcKlinesOpt] = useState({});
+  const [ecVolsOpt, setEcVolsOpt] = useState({});
 
-  const [echartsHeight, setEchartsHeight] = useState(300);
+  const [ecKlinesHeight, setEcKlinesHeight] = useState(300);
+  const [ecVolsHeight, setEcVolsHeight] = useState(600);
   const [showUpdateFavs, setShowUpdateFavs] = useState(false);
   const [favsKey, setFavsKey] = useState('');
   const [favsSuccessMsg, setFavsSuccessMsg] = useState('');
@@ -119,7 +125,8 @@ function App() {
     slowUps: '微弱上涨',
     slowDowns: '微弱下跌',
     alls: '全部',
-    news: '新币'
+    news: '新币',
+    volRanking: '交易量排行'
   };
   const state = {
     favs,
@@ -138,7 +145,8 @@ function App() {
     fuckingTops,
     fuckingBottoms,
     alls,
-    news
+    news,
+    volRanking: alls
   };
 
   useEffect(() => {
@@ -196,8 +204,11 @@ function App() {
       setFavs(favs);
 
       const clientWidth = document.body.clientWidth;
-      const echartsHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : (clientWidth / 4) * 3;
-      setEchartsHeight(echartsHeight);
+      const ecKlinesHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : (clientWidth / 4) * 3;
+      setEcKlinesHeight(ecKlinesHeight);
+
+      const ecVolsHeight = clientWidth > 786 ? 600 : clientWidth;
+      setEcKlinesHeight(ecVolsHeight);
     };
     fetchData();
   }, []);
@@ -205,11 +216,15 @@ function App() {
   const changeCurType = _ => {
     setCurType(_);
     setCurSymbol('');
+
+    if (_ === 'volRanking') {
+      setEcVolsOpt(getEcVolsOpt(allData));
+    }
   };
 
   const changeCurSymbol = _ => {
     setCurSymbol(_);
-    setEchartsOpt(getEchartsOpt(allData[_], _));
+    setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
   };
 
   const addFavs = () => {
@@ -234,19 +249,6 @@ function App() {
       setFavs(_favs);
       saveFavorites(_favs);
     }
-  };
-
-  const getName = _ => {
-    const fait1 = 'USDT';
-    const fait2 = 'BUSD';
-    if (_.split(fait1).length > 1) {
-      return _.split(fait1)[0];
-    }
-    if (_.split(fait2).length > 1) {
-      return _.split(fait2)[0];
-    }
-
-    return _;
   };
 
   const showFavsModal = () => {
@@ -339,7 +341,7 @@ function App() {
                       onClose={() => removeFavs(_)}
                       onClick={() => changeCurSymbol(_)}
                     >
-                      {getName(_)}
+                      {getBaseAsset(_)}
                     </Tag>
                   </div>
                 );
@@ -347,28 +349,31 @@ function App() {
             </HomeRow>
           </>
         ) : (
-          <HomeRow>
-            {state[curType].map(_ => {
-              return (
-                <div key={_}>
-                  <Tag color={curSymbol === _ ? '#177ddc' : ''} onClick={() => changeCurSymbol(_)}>
-                    {favs.includes(_) && <StarFilled />} {getName(_)}
-                  </Tag>
-                </div>
-              );
-            })}
-          </HomeRow>
+          curType !== 'volRanking' && (
+            <HomeRow>
+              {state[curType].map(_ => {
+                return (
+                  <div key={_}>
+                    <Tag color={curSymbol === _ ? '#177ddc' : ''} onClick={() => changeCurSymbol(_)}>
+                      {favs.includes(_) && <StarFilled />} {getBaseAsset(_)}
+                    </Tag>
+                  </div>
+                );
+              })}
+            </HomeRow>
+          )
         )}
 
         <Divider />
 
-        {curSymbol && (
-          <HomeRow>
-            <HomeEcharts>
-              <ReactECharts theme="dark" style={{ height: `${echartsHeight}px` }} option={echartsOpt} />
-            </HomeEcharts>
-          </HomeRow>
-        )}
+        <HomeRow>
+          <HomeEcharts>
+            {curSymbol && <ReactECharts theme="dark" style={{ height: `${ecKlinesHeight}px` }} option={ecKlinesOpt} />}
+            {curType === 'volRanking' && (
+              <ReactECharts theme="dark" style={{ height: `${ecVolsHeight}px` }} option={ecVolsOpt} />
+            )}
+          </HomeEcharts>
+        </HomeRow>
 
         <Footer>
           <Link href="#/help">Help</Link>
