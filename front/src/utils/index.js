@@ -185,7 +185,8 @@ export const findPoint = data => {
   // 上涨买点
   const upBuys = [];
   const upBuysFunc = (open, close, oma, cma) => {
-    if (open[0] < cma[0]) {
+    const min = Math.min(open[0], close[0]);
+    if (min < cma[0]) {
       return true;
     }
     return false;
@@ -209,7 +210,8 @@ export const findPoint = data => {
   // 下跌卖点
   const downSells = [];
   const downSellsFunc = (open, close, oma, cma) => {
-    if (open[0] > cma[0]) {
+    const max = Math.max(open[0], close[0]);
+    if (max > cma[0]) {
       return true;
     }
     return false;
