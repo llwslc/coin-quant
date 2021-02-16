@@ -208,7 +208,7 @@ function App() {
       setEcKlinesHeight(ecKlinesHeight);
 
       const ecVolsHeight = clientWidth > 786 ? 600 : clientWidth;
-      setEcKlinesHeight(ecVolsHeight);
+      setEcVolsHeight(ecVolsHeight);
     };
     fetchData();
   }, []);
