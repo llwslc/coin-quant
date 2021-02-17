@@ -344,7 +344,8 @@ export const getEcKlinesOpt = (data, symbol) => {
   };
 
   const calcCross = (rawData, dayCount = 7) => {
-    const { values, oma7 } = rawData;
+    const { categoryData, values, oma7 } = rawData;
+    let keyDate = '-';
     let crossData = '-';
     let crossChange = '-';
 
@@ -360,10 +361,12 @@ export const getEcKlinesOpt = (data, symbol) => {
     const _values = values.slice(idx - dayCount + 1, idx);
     const result = dayCount * cross - _values.reduce((acc, cur) => acc + Number(cur[1]), 0);
 
+    keyDate = categoryData[categoryData.length - dayCount];
     crossData = Number(result.toPrecision(Number(_values[0][1]).toString().length - 1));
     crossChange = `${(((crossData - Number(values[idx][0])) / Number(values[idx][0])) * 100).toFixed(2)} %`;
 
     return {
+      keyDate,
       crossData,
       crossChange
     };
@@ -371,7 +374,7 @@ export const getEcKlinesOpt = (data, symbol) => {
 
   const optData = splitData(data);
   // golden/death cross
-  const { crossData, crossChange } = calcCross(optData);
+  const { keyDate, crossData, crossChange } = calcCross(optData);
 
   return {
     title: {
@@ -473,7 +476,7 @@ export const getEcKlinesOpt = (data, symbol) => {
             opacity: 0.8
           },
           animation: false,
-          data: [{ yAxis: `${crossData}` }]
+          data: [{ xAxis: `${keyDate}` }, { yAxis: `${crossData}` }]
         }
       },
       {
