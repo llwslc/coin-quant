@@ -426,12 +426,17 @@ function App() {
 
         <HomeSymbolTypes>
           <div>
-            <Tag onClick={() => changePreSymbol()}>
-              <StepBackwardOutlined />
-            </Tag>
-            <Tag onClick={() => changeNxtSymbol()}>
-              <StepForwardOutlined />
-            </Tag>
+            {' '}
+            {state[curType].length > 0 && (
+              <>
+                <Tag onClick={() => changePreSymbol()}>
+                  <StepBackwardOutlined />
+                </Tag>
+                <Tag onClick={() => changeNxtSymbol()}>
+                  <StepForwardOutlined />
+                </Tag>
+              </>
+            )}
           </div>
           <div>
             {symbolTypes.map(_ => {
