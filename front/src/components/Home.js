@@ -50,6 +50,9 @@ const HomeSymbolTypes = styled.div`
   div {
     display: flex;
   }
+  @media (max-width: 768px) {
+    margin: 10px 5% 0;
+  }
 `;
 
 const HomeSelectSymbol = styled.div`
