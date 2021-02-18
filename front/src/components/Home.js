@@ -7,7 +7,9 @@ import {
   StarFilled,
   CloudSyncOutlined,
   CloudUploadOutlined,
-  CloudDownloadOutlined
+  CloudDownloadOutlined,
+  StepBackwardOutlined,
+  StepForwardOutlined
 } from '@ant-design/icons';
 import { Button, Divider, Input, Layout, Modal, Select, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
@@ -31,7 +33,7 @@ const HomeMain = styled.div`
 `;
 
 const HomeRow = styled.div`
-  margin: 20px auto;
+  margin: 10px auto;
   max-width: 1280px;
   display: flex;
   justify-content: center;
@@ -39,6 +41,14 @@ const HomeRow = styled.div`
 
   .ant-tag {
     margin-bottom: 8px;
+  }
+`;
+const HomeSymbolTypes = styled.div`
+  margin: 10px 20% 0;
+  display: flex;
+  justify-content: space-between;
+  div {
+    display: flex;
   }
 `;
 
@@ -98,6 +108,8 @@ function App() {
   const [searchSymbol, setSearchSymbol] = useState('');
   const [curType, setCurType] = useState('favs');
   const [curSymbol, setCurSymbol] = useState('');
+  const [symbolTypes, setSymbolTypes] = useState([]);
+
   const [ecKlinesOpt, setEcKlinesOpt] = useState({});
   const [ecVolsOpt, setEcVolsOpt] = useState({});
 
@@ -148,6 +160,23 @@ function App() {
     news,
     volRanking: alls
   };
+  const findTypes = [
+    'upBuys',
+    'downBuys',
+    'upSells',
+    'downSells',
+    'tops',
+    'bottoms',
+    'fuckingTops',
+    'fuckingBottoms',
+    'ups',
+    'downs',
+    'fastUps',
+    'fastDowns',
+    'slowUps',
+    'slowDowns',
+    'news'
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -225,6 +254,35 @@ function App() {
   const changeCurSymbol = _ => {
     setCurSymbol(_);
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
+
+    const symbolTypes = [];
+    for (const t of findTypes) {
+      const symbols = state[t];
+      for (const s of symbols) {
+        if (s === _) {
+          symbolTypes.push(t);
+          break;
+        }
+      }
+    }
+    setSymbolTypes(symbolTypes);
+  };
+  const changePreSymbol = () => {
+    const curSymbols = state[curType];
+    const idx = curSymbols.indexOf(curSymbol);
+    const preSymbol = curSymbols[idx > 0 ? idx - 1 : 0];
+    if (preSymbol !== curSymbol) {
+      changeCurSymbol(preSymbol);
+    }
+  };
+
+  const changeNxtSymbol = () => {
+    const curSymbols = state[curType];
+    const idx = curSymbols.indexOf(curSymbol);
+    const nxtSymbol = curSymbols[idx < curSymbols.length - 1 ? idx + 1 : curSymbols.length - 1];
+    if (nxtSymbol !== curSymbol) {
+      changeCurSymbol(nxtSymbol);
+    }
   };
 
   const addFavs = () => {
@@ -365,6 +423,28 @@ function App() {
         )}
 
         <Divider />
+
+        <HomeSymbolTypes>
+          <div>
+            <Tag onClick={() => changePreSymbol()}>
+              <StepBackwardOutlined />
+            </Tag>
+            <Tag onClick={() => changeNxtSymbol()}>
+              <StepForwardOutlined />
+            </Tag>
+          </div>
+          <div>
+            {symbolTypes.map(_ => {
+              return (
+                <div key={_}>
+                  <Tag color={curType === _ ? '#177ddc' : ''} onClick={() => setCurType(_)}>
+                    {types[_]}
+                  </Tag>
+                </div>
+              );
+            })}
+          </div>
+        </HomeSymbolTypes>
 
         <HomeRow>
           <HomeEcharts>
