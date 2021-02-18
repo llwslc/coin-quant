@@ -332,6 +332,13 @@ export const getEcKlinesOpt = (data, symbol) => {
       values.push(d.slice(1));
     }
 
+    const idx = categoryData.length - 1;
+    const latestDate = new Date(categoryData[idx]).getTime();
+    categoryData.push(new Date(latestDate + 24 * 60 * 60 * 1000).toLocaleDateString());
+
+    const latestClose = values[idx][1];
+    values.push([latestClose, latestClose, latestClose, latestClose]);
+
     oma7 = calculateMA(values, 7, true);
     cma7 = calculateMA(values);
 
@@ -374,7 +381,16 @@ export const getEcKlinesOpt = (data, symbol) => {
 
   const optData = splitData(data);
   // golden/death cross
-  const { keyDate, crossData, crossChange } = calcCross(optData);
+  const { categoryData, values, oma7 } = optData;
+  const trueOptData = {
+    categoryData: [...categoryData].slice(0, categoryData.length - 1),
+    values: [...values].slice(0, values.length - 1),
+    oma7: [...oma7].slice(0, oma7.length - 1)
+  };
+  const { keyDate, crossData, crossChange } = calcCross(trueOptData);
+
+  const virtualKeyDate = categoryData[categoryData.length - 1];
+  const { crossData: virtualCrossData, crossChange: virtualCrossChange } = calcCross(optData);
 
   return {
     title: {
@@ -419,6 +435,13 @@ export const getEcKlinesOpt = (data, symbol) => {
         <br />
         <div><span style="color: ${crossData > open ? upColor : downColor}">CORSS: </span>${crossData}</div>
         <div><span style="color: ${crossData > open ? upColor : downColor}">CHANGE: </span>${crossChange}</div>
+        <br />
+        <div><span style="color: ${
+          virtualCrossData > open ? upColor : downColor
+        }">CORSS: </span>${virtualCrossData}</div>
+        <div><span style="color: ${
+          virtualCrossData > open ? upColor : downColor
+        }">CHANGE: </span>${virtualCrossChange}</div>
         `;
       }
     },
@@ -470,13 +493,19 @@ export const getEcKlinesOpt = (data, symbol) => {
           borderColor0: downBorderColor
         },
         markLine: {
+          symbol: ['none', 'none'],
           lineStyle: {
             type: 'dashed',
             color: crossColor,
             opacity: 0.8
           },
           animation: false,
-          data: [{ xAxis: `${keyDate}` }, { yAxis: `${crossData}` }]
+          data: [
+            { xAxis: `${keyDate}` },
+            { xAxis: `${virtualKeyDate}` },
+            { yAxis: `${crossData}` },
+            { xAxis: `${virtualCrossData}` }
+          ]
         }
       },
       {
