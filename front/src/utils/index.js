@@ -333,6 +333,7 @@ export const getEcKlinesOpt = (data, symbol) => {
     }
 
     const idx = categoryData.length - 1;
+
     const latestDate = new Date(categoryData[idx]).getTime();
     categoryData.push(new Date(latestDate + 24 * 60 * 60 * 1000).toLocaleDateString());
 
@@ -389,7 +390,7 @@ export const getEcKlinesOpt = (data, symbol) => {
   };
   const { keyDate, crossData, crossChange } = calcCross(trueOptData);
 
-  const virtualKeyDate = categoryData[categoryData.length - 1];
+  const virtualKeyDate = categoryData[categoryData.length - 2];
   const { crossData: virtualCrossData, crossChange: virtualCrossChange } = calcCross(optData);
 
   return {
@@ -438,10 +439,10 @@ export const getEcKlinesOpt = (data, symbol) => {
         <br />
         <div><span style="color: ${
           virtualCrossData > open ? upColor : downColor
-        }">CORSS: </span>${virtualCrossData}</div>
+        }">VCORSS: </span>${virtualCrossData}</div>
         <div><span style="color: ${
           virtualCrossData > open ? upColor : downColor
-        }">CHANGE: </span>${virtualCrossChange}</div>
+        }">VCHANGE: </span>${virtualCrossChange}</div>
         `;
       }
     },
@@ -502,9 +503,19 @@ export const getEcKlinesOpt = (data, symbol) => {
           animation: false,
           data: [
             { xAxis: `${keyDate}` },
-            { xAxis: `${virtualKeyDate}` },
+            {
+              xAxis: `${virtualKeyDate}`,
+              lineStyle: {
+                opacity: 0.5
+              }
+            },
             { yAxis: `${crossData}` },
-            { xAxis: `${virtualCrossData}` }
+            {
+              yAxis: `${virtualCrossData}`,
+              lineStyle: {
+                opacity: 0.5
+              }
+            }
           ]
         }
       },
