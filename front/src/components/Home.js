@@ -44,12 +44,15 @@ const HomeRow = styled.div`
   }
 `;
 const HomeSymbolTypes = styled.div`
+  width: 100%;
   margin: 10px 20% 0;
   display: flex;
   justify-content: space-between;
+
   div {
     display: flex;
   }
+
   @media (max-width: 768px) {
     margin: 10px 5% 0;
   }
@@ -178,7 +181,8 @@ function App() {
     'fastDowns',
     'slowUps',
     'slowDowns',
-    'news'
+    'news',
+    'alls'
   ];
 
   useEffect(() => {
@@ -248,6 +252,7 @@ function App() {
   const changeCurType = _ => {
     setCurType(_);
     setCurSymbol('');
+    setSymbolTypes([]);
 
     if (_ === 'volRanking') {
       setEcVolsOpt(getEcVolsOpt(allData));
@@ -427,32 +432,33 @@ function App() {
 
         <Divider />
 
-        <HomeSymbolTypes>
-          <div>
-            {' '}
-            {state[curType].length > 0 && (
-              <>
-                <Tag onClick={() => changePreSymbol()}>
-                  <StepBackwardOutlined />
-                </Tag>
-                <Tag onClick={() => changeNxtSymbol()}>
-                  <StepForwardOutlined />
-                </Tag>
-              </>
-            )}
-          </div>
-          <div>
-            {symbolTypes.map(_ => {
-              return (
-                <div key={_}>
-                  <Tag color={curType === _ ? '#177ddc' : ''} onClick={() => setCurType(_)}>
-                    {types[_]}
+        <HomeRow>
+          <HomeSymbolTypes>
+            <div>
+              {state[curType].length > 0 && curSymbol && (
+                <>
+                  <Tag onClick={() => changePreSymbol()}>
+                    <StepBackwardOutlined />
                   </Tag>
-                </div>
-              );
-            })}
-          </div>
-        </HomeSymbolTypes>
+                  <Tag onClick={() => changeNxtSymbol()}>
+                    <StepForwardOutlined />
+                  </Tag>
+                </>
+              )}
+            </div>
+            <div>
+              {symbolTypes.map(_ => {
+                return (
+                  <div key={_}>
+                    <Tag color={curType === _ ? '#177ddc' : ''} onClick={() => setCurType(_)}>
+                      {types[_]}
+                    </Tag>
+                  </div>
+                );
+              })}
+            </div>
+          </HomeSymbolTypes>
+        </HomeRow>
 
         <HomeRow>
           <HomeEcharts>
