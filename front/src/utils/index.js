@@ -429,8 +429,9 @@ export const getEcKlinesOpt = (data, symbol) => {
         const close = Number(k.data[2]);
         const low = Number(k.data[3]);
         const high = Number(k.data[4]);
-        const change = `${(((close - open) / open) * 100).toFixed(2)} %`;
-        const amplitude = `${(((high - low) / low) * 100).toFixed(2)} %`;
+
+        const change = calcChange(close, open);
+        const amplitude = calcChange(high, low);
         const oma = oma7.data === '-' ? oma7.data : Number(oma7.data.toPrecision(open.toString().length - 1));
         const cma = cma7.data === '-' ? cma7.data : Number(cma7.data.toPrecision(open.toString().length - 1));
 
