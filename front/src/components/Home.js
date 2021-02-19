@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import {
   PlusOutlined,
   StarFilled,
+  StarOutlined,
   CloudSyncOutlined,
   CloudUploadOutlined,
   CloudDownloadOutlined,
@@ -51,6 +52,12 @@ const HomeSymbolTypes = styled.div`
 
   div {
     display: flex;
+    flex-wrap: wrap;
+  }
+
+  div:nth-child(1) {
+    display: block;
+    width: 30%;
   }
 
   @media (max-width: 768px) {
@@ -293,11 +300,13 @@ function App() {
     }
   };
 
-  const addFavs = () => {
-    if (favs.includes(searchSymbol)) {
+  const addFavs = _ => {
+    const _symbol = _ ? _ : searchSymbol;
+
+    if (favs.includes(_symbol)) {
       return;
     }
-    const _favs = [...favs, searchSymbol];
+    const _favs = [...favs, _symbol];
     setFavs(_favs);
     saveFavorites(_favs);
   };
@@ -447,6 +456,11 @@ function App() {
               )}
             </div>
             <div>
+              {curSymbol && (
+                <Tag onClick={() => addFavs(curSymbol)}>
+                  {favs.includes(curSymbol) ? <StarFilled /> : <StarOutlined />}
+                </Tag>
+              )}
               {symbolTypes.map(_ => {
                 return (
                   <div key={_}>
