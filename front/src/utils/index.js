@@ -351,47 +351,58 @@ export const getEcKlinesOpt = (data, symbol) => {
     };
   };
 
+  const calcChange = (cur, base) => {
+    return `${(((cur - base) / base) * 100).toFixed(2)} %`;
+  };
+
   const calcCross = (rawData, dayCount = 7) => {
-    const { categoryData, values, oma7 } = rawData;
+    const { categoryData, values } = rawData;
     let keyDate = '-';
     let crossData = '-';
     let crossChange = '-';
 
+    let trueDate = '-';
+    let virtualCrossData = '-';
+    let virtualCrossChange = '-';
+
+    const _categoryData = [...categoryData].slice(0, categoryData.length - 1);
+    const _values = [...values].slice(0, values.length - 1);
+
     if (values.length < dayCount + 1) {
       return {
+        keyDate,
         crossData,
-        crossChange
+        crossChange,
+        trueDate,
+        virtualCrossData,
+        virtualCrossChange
       };
     }
 
-    const cross = oma7[oma7.length - 1];
-    const idx = values.length - 1;
-    const _values = values.slice(idx - dayCount + 1, idx);
-    const result = dayCount * cross - _values.reduce((acc, cur) => acc + Number(cur[1]), 0);
+    const idx = _values.length - 1;
+    const keyIdx = _categoryData.length - dayCount;
 
-    keyDate = categoryData[categoryData.length - dayCount];
-    crossData = Number(result.toPrecision(Number(_values[0][1]).toString().length - 1));
-    crossChange = `${(((crossData - Number(values[idx][0])) / Number(values[idx][0])) * 100).toFixed(2)} %`;
+    keyDate = _categoryData[keyIdx];
+    crossData = Number(_values[keyIdx][0]);
+    crossChange = calcChange(crossData, Number(_values[idx][0]));
+
+    trueDate = _categoryData[idx];
+    virtualCrossData = Number(_values[keyIdx][1]);
+    virtualCrossChange = calcChange(virtualCrossData, Number(_values[idx][1]));
 
     return {
       keyDate,
       crossData,
-      crossChange
+      crossChange,
+      trueDate,
+      virtualCrossData,
+      virtualCrossChange
     };
   };
 
   const optData = splitData(data);
   // golden/death cross
-  const { categoryData, values, oma7 } = optData;
-  const trueOptData = {
-    categoryData: [...categoryData].slice(0, categoryData.length - 1),
-    values: [...values].slice(0, values.length - 1),
-    oma7: [...oma7].slice(0, oma7.length - 1)
-  };
-  const { keyDate, crossData, crossChange } = calcCross(trueOptData);
-
-  const virtualKeyDate = categoryData[categoryData.length - 2];
-  const { crossData: virtualCrossData, crossChange: virtualCrossChange } = calcCross(optData);
+  const { keyDate, crossData, crossChange, trueDate, virtualCrossData, virtualCrossChange } = calcCross(optData);
 
   return {
     title: {
@@ -504,7 +515,7 @@ export const getEcKlinesOpt = (data, symbol) => {
           data: [
             { xAxis: `${keyDate}` },
             {
-              xAxis: `${virtualKeyDate}`,
+              xAxis: `${trueDate}`,
               lineStyle: {
                 opacity: 0.5
               }
