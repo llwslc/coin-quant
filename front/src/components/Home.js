@@ -247,7 +247,7 @@ function App() {
       setFavs(favs);
 
       const clientWidth = document.body.clientWidth;
-      const ecKlinesHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : (clientWidth / 4) * 3;
+      const ecKlinesHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : clientWidth;
       setEcKlinesHeight(ecKlinesHeight);
 
       const ecVolsHeight = clientWidth > 786 ? 600 : clientWidth;
