@@ -196,7 +196,7 @@ function App() {
     const fetchData = async () => {
       const { data } = await axios.get(`${config.backend.base}${config.backend.klines}`);
 
-      const news = findNew(data, 10);
+      const news = findNew(data, 20);
       const {
         ups,
         upBuys,
