@@ -384,7 +384,7 @@ export const getEcKlinesOpt = (data, symbol) => {
 
     keyDate = _categoryData[keyIdx];
     crossData = Number(_values[keyIdx][0]);
-    crossChange = calcChange(crossData, Number(_values[idx][0]));
+    crossChange = calcChange(crossData, Number(_values[idx][1]));
 
     trueDate = _categoryData[idx];
     virtualCrossData = Number(_values[keyIdx][1]);
