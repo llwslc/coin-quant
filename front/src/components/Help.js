@@ -16,6 +16,11 @@ const HelpWarning = styled.div`
   margin: 2rem;
   text-align: center;
   font-size: 2rem;
+
+  span,
+  a {
+    margin: auto;
+  }
 `;
 
 function App() {
