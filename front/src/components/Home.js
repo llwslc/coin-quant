@@ -40,10 +40,26 @@ const HomeRow = styled.div`
   justify-content: center;
   flex-wrap: wrap;
 
+  margin-top: ${props => (props.mt !== undefined ? `${props.mt}px` : '10px')};
+  margin-bottom: ${props => (props.mb !== undefined ? `${props.mb}px` : '10px')};
+
   .ant-tag {
     margin-bottom: 8px;
   }
+
+  &.green {
+    span {
+      color: SpringGreen;
+    }
+  }
+
+  &.red {
+    span {
+      color: OrangeRed;
+    }
+  }
 `;
+
 const HomeSymbolTypes = styled.div`
   width: 100%;
   margin: 10px 20% 0;
@@ -191,6 +207,9 @@ function App() {
     'news',
     'alls'
   ];
+  const buyTypes = ['upBuys', 'downBuys', 'bottoms', 'fuckingBottoms'];
+  const sellTypes = ['upSells', 'downSells', 'tops', 'fuckingTops'];
+  const trendTypes = ['favs', 'ups', 'downs', 'fastUps', 'fastDowns', 'slowUps', 'slowDowns', 'news', 'alls'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -371,8 +390,30 @@ function App() {
   return (
     <Layout>
       <HomeMain>
-        <HomeRow>
-          {Object.keys(types).map(_ => {
+        <HomeRow mb={0}>
+          {trendTypes.map(_ => {
+            return (
+              <div key={_}>
+                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
+                  {types[_]}({state[_].length})
+                </Button>
+              </div>
+            );
+          })}
+        </HomeRow>
+        <HomeRow mt={0} mb={0} className={'green'}>
+          {buyTypes.map(_ => {
+            return (
+              <div key={_}>
+                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
+                  {types[_]}({state[_].length})
+                </Button>
+              </div>
+            );
+          })}
+        </HomeRow>
+        <HomeRow mt={0} mb={0} className={'red'}>
+          {sellTypes.map(_ => {
             return (
               <div key={_}>
                 <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
