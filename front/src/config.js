@@ -12,6 +12,9 @@ const Config = {
   binanceUrl: {
     base: 'https://www.binance.com/zh-CN/trade/',
     query: '?layout=pro'
+  },
+  researchUrl: {
+    base: 'https://research.binance.com/cn'
   }
 };
 
