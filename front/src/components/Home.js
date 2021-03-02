@@ -529,14 +529,17 @@ function App() {
           </HomeSymbolTypes>
         </HomeRow>
 
-        <HomeRow>
-          <span>
-            <a href={curSymbolInfo.href} target="_blank">
-              {curSymbolInfo.title}
-            </a>{' '}
-            {curSymbolInfo.description}
-          </span>
-        </HomeRow>
+        {curSymbol && (
+          <HomeRow mt={0} mb={0}>
+            <span>
+              <a href={curSymbolInfo.href} target="_blank">
+                {curSymbolInfo.title}
+              </a>{' '}
+              {curSymbolInfo.description}
+            </span>
+          </HomeRow>
+        )}
+
         <HomeRow>
           <HomeEcharts>
             {curSymbol && <ReactECharts theme="dark" style={{ height: `${ecKlinesHeight}px` }} option={ecKlinesOpt} />}
