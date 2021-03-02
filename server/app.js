@@ -35,24 +35,29 @@ app.all('*', function (req, res, next) {
 });
 
 app.get('/api/klines', async (req, res) => {
-  const result = {};
+  let result = {};
   try {
     const daySec = 24 * 60 * 60 * 1000;
     const openTime = Date.now() - 20 * daySec;
     const klines = await db.allSync(`SELECT * FROM klines WHERE openTime > '${openTime}';`);
-    const curPrices = await axios.get(config.priceUrl);
-    const dayVolume = await axios.get(config.volumeUrl);
+    const [curPrices, dayVolume, coinsInfo] = await Promise.all([
+      axios.get(config.priceUrl),
+      axios.get(config.volumeUrl),
+      axios.get(config.research)
+    ]);
     const { data: prices } = curPrices;
     const { data: volumes } = dayVolume;
+    const { data: coins } = coinsInfo;
     const volObj = {};
 
+    const klinesData = {};
     for (const k of klines) {
       const symbol = k.symbol;
       const d = [k.openTime, k.open, k.close, k.low, k.high, k.QuoteAssetVolume];
-      if (result[symbol]) {
-        result[symbol].push(d);
+      if (klinesData[symbol]) {
+        klinesData[symbol].push(d);
       } else {
-        result[symbol] = [d];
+        klinesData[symbol] = [d];
       }
     }
 
@@ -62,9 +67,9 @@ app.get('/api/klines', async (req, res) => {
 
     for (const p of prices) {
       const symbol = p.symbol;
-      if (result[symbol]) {
-        const lastIdx = result[symbol].length - 1;
-        const lastObj = result[symbol][lastIdx];
+      if (klinesData[symbol]) {
+        const lastIdx = klinesData[symbol].length - 1;
+        const lastObj = klinesData[symbol][lastIdx];
 
         const open = lastObj[2];
         const close = p.price;
@@ -73,9 +78,11 @@ app.get('/api/klines', async (req, res) => {
         const volume = volObj[symbol];
 
         const latestObj = [lastObj[0] + daySec, open, close, low, high, volume];
-        result[symbol].push(latestObj);
+        klinesData[symbol].push(latestObj);
       }
     }
+
+    result = { klines: klinesData, coins };
   } catch (error) {
     logger.error('[klines]', error.message ? error.message : error);
   }
