@@ -14,5 +14,6 @@ module.exports = {
   baseUrl: 'https://www.binance.com/zh-CN/trade',
   klinesUrl: 'https://api.binance.com/api/v3/klines',
   priceUrl: 'https://api.binance.com/api/v3/ticker/price',
-  volumeUrl: 'https://api.binance.com/api/v1/ticker/24hr'
+  volumeUrl: 'https://api.binance.com/api/v1/ticker/24hr',
+  research: 'https://research.binance.com/apis/search?lang=cn'
 };
