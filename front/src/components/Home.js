@@ -116,6 +116,8 @@ const HomeCloudFavsButton = styled.div`
 
 function App() {
   const [allData, setAllData] = useState([]);
+  const [coinsInfo, setCoinInfo] = useState([]);
+
   const [favs, setFavs] = useState([]);
   const [alls, setAlls] = useState([]);
   const [news, setNews] = useState([]);
@@ -138,6 +140,7 @@ function App() {
   const [curType, setCurType] = useState('favs');
   const [curSymbol, setCurSymbol] = useState('');
   const [symbolTypes, setSymbolTypes] = useState([]);
+  const [curSymbolInfo, setCurSymbolInfo] = useState({});
 
   const [ecKlinesOpt, setEcKlinesOpt] = useState({});
   const [ecVolsOpt, setEcVolsOpt] = useState({});
@@ -215,7 +218,8 @@ function App() {
     const fetchData = async () => {
       const { data } = await axios.get(`${config.backend.base}${config.backend.klines}`);
 
-      const news = findNew(data, 20);
+      const { klines = [], coins = [] } = data;
+      const news = findNew(klines, 20);
       const {
         ups,
         upBuys,
@@ -231,14 +235,14 @@ function App() {
         bottoms,
         fuckingTops,
         fuckingBottoms
-      } = findPoint(data);
+      } = findPoint(klines);
 
       const favs = readFavorites();
 
       const sortByVol = symbols => {
         return [...symbols].sort((s1, s2) => {
           const calcVol = s => {
-            const d = data[s];
+            const d = klines[s];
             const _ = d[d.length - 1];
             return Number(_[5]);
           };
@@ -246,7 +250,8 @@ function App() {
         });
       };
 
-      setAllData(data);
+      setAllData(klines);
+      setCoinInfo(coins);
       setUps(sortByVol(ups));
       setUpBuys(sortByVol(upBuys));
       setUpSells(sortByVol(upSells));
@@ -261,7 +266,7 @@ function App() {
       setBottoms(sortByVol(bottoms));
       setFuckingTops(sortByVol(fuckingTops));
       setFuckingBottoms(sortByVol(fuckingBottoms));
-      setAlls(sortByVol(Object.keys(data)));
+      setAlls(sortByVol(Object.keys(klines)));
       setNews(sortByVol(news));
       setFavs(favs);
 
@@ -288,6 +293,15 @@ function App() {
   const changeCurSymbol = _ => {
     setCurSymbol(_);
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
+
+    for (const coin of coinsInfo) {
+      if (coin.title.includes(`(${getBaseAsset(_)})`)) {
+        setCurSymbolInfo({
+          ...coin,
+          href: `${config.researchUrl.base}${coin.href}`
+        });
+      }
+    }
 
     const symbolTypes = [];
     for (const t of findTypes) {
@@ -412,7 +426,7 @@ function App() {
             );
           })}
         </HomeRow>
-        <HomeRow mt={0} mb={0} className={'red'}>
+        <HomeRow mt={0} className={'red'}>
           {sellTypes.map(_ => {
             return (
               <div key={_}>
@@ -515,6 +529,14 @@ function App() {
           </HomeSymbolTypes>
         </HomeRow>
 
+        <HomeRow>
+          <span>
+            <a href={curSymbolInfo.href} target="_blank">
+              {curSymbolInfo.title}
+            </a>{' '}
+            {curSymbolInfo.description}
+          </span>
+        </HomeRow>
         <HomeRow>
           <HomeEcharts>
             {curSymbol && <ReactECharts theme="dark" style={{ height: `${ecKlinesHeight}px` }} option={ecKlinesOpt} />}
