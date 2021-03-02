@@ -207,12 +207,23 @@ function App() {
     'fastDowns',
     'slowUps',
     'slowDowns',
-    'news',
-    'alls'
+    'alls',
+    'news'
   ];
   const buyTypes = ['upBuys', 'downBuys', 'bottoms', 'fuckingBottoms'];
   const sellTypes = ['upSells', 'downSells', 'tops', 'fuckingTops'];
-  const trendTypes = ['favs', 'ups', 'downs', 'fastUps', 'fastDowns', 'slowUps', 'slowDowns', 'news', 'alls'];
+  const trendTypes = [
+    'favs',
+    'ups',
+    'downs',
+    'fastUps',
+    'fastDowns',
+    'slowUps',
+    'slowDowns',
+    'alls',
+    'news',
+    'volRanking'
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -294,8 +305,9 @@ function App() {
     setCurSymbol(_);
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
 
+    setCurSymbolInfo({});
     for (const coin of coinsInfo) {
-      if (coin.title.includes(`(${getBaseAsset(_)})`)) {
+      if (coin.title.includes(`(${getBaseAsset(_)})`) || coin.title.includes(`（${getBaseAsset(_)}）`)) {
         setCurSymbolInfo({
           ...coin,
           href: `${config.researchUrl.base}${coin.href}`
