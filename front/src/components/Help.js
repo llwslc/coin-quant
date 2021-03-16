@@ -31,7 +31,21 @@ function App() {
         <Text type="warning">真正做生意的人，只赚取有限的利润。暴利是长久不了的。</Text>
         <Text type="danger">严格按照自己的策略操作，不要情绪化</Text>
         <Text>抄底不满仓，止盈不全抛</Text>
+        <Text type="danger">所有人都赚钱会是崩盘前夜</Text>
+        <Text type="warning">下跌到恐惧的地步会是底部</Text>
+        <Text type="success">When the music is on you gotta dance</Text>
+        <Text type="warning">实质性下跌还是恐慌性下跌</Text>
+        <Text type="danger">亏钱时的痛苦感比赚钱时的喜悦感要高得多</Text>
 
+        <Link href="https://bitbo.io/" target="_blank">
+          bitbo
+        </Link>
+        <Link href="https://digitalik.net/btc/" target="_blank">
+          digitalik
+        </Link>
+        <Link href="https://hodlwave.com/" target="_blank">
+          Bitcoin UTXO Age Distribution
+        </Link>
         <Link href="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" target="_blank">
           Bitcoin "Rainbow" Price Chart
         </Link>
