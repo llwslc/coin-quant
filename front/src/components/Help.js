@@ -43,6 +43,9 @@ function App() {
         <Link href="https://digitalik.net/btc/" target="_blank">
           digitalik
         </Link>
+        <Link href="https://cryptoquant.com/overview/full/180?window=day" target="_blank">
+          BTC: All Miners Outflow
+        </Link>
         <Link href="https://hodlwave.com/" target="_blank">
           Bitcoin UTXO Age Distribution
         </Link>
