@@ -67,6 +67,9 @@ function App() {
         <Link href="https://www.lookintobitcoin.com/charts/pi-cycle-top-indicator/" target="_blank">
           Pi Cycle Top Indicator
         </Link>
+        <Link href="https://charts.coinmetrics.io/network-data/" target="_blank">
+          Coinmetrics
+        </Link>
       </HelpWarning>
       <Help>
         <Footer>
