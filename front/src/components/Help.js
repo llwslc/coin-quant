@@ -73,6 +73,9 @@ function App() {
         <Link href="https://charts.coinmetrics.io/network-data/" target="_blank">
           Coinmetrics
         </Link>
+        <Link href="https://www.mytokencap.com/concept/263" target="_blank">
+          Binance Investment
+        </Link>
       </HelpWarning>
       <Help>
         <Footer>
