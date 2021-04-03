@@ -46,6 +46,9 @@ function App() {
         <Link href="https://cryptoquant.com/overview/full/180?window=day" target="_blank">
           BTC: All Miners Outflow
         </Link>
+        <Link href="https://www.blockchaincenter.net/altcoin-season-index/" target="_blank">
+          Altcoin Season Index
+        </Link>
         <Link href="https://hodlwave.com/" target="_blank">
           Bitcoin UTXO Age Distribution
         </Link>
