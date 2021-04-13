@@ -6,6 +6,7 @@ import {
   PlusOutlined,
   StarFilled,
   StarOutlined,
+  StopOutlined,
   CloudSyncOutlined,
   CloudUploadOutlined,
   CloudDownloadOutlined,
@@ -136,6 +137,9 @@ function App() {
   const [fuckingTops, setFuckingTops] = useState([]);
   const [fuckingBottoms, setFuckingBottoms] = useState([]);
 
+  const [binance, setBinance] = useState([]);
+  const [coinbase, setCoinbase] = useState([]);
+
   const [searchSymbol, setSearchSymbol] = useState('');
   const [curType, setCurType] = useState('favs');
   const [curSymbol, setCurSymbol] = useState('');
@@ -170,6 +174,8 @@ function App() {
     slowDowns: '微弱下跌',
     alls: '全部',
     news: '新币',
+    binance: 'BINANCE',
+    coinbase: 'COINBASE',
     volRanking: '交易量排行'
   };
   const state = {
@@ -190,6 +196,8 @@ function App() {
     fuckingBottoms,
     alls,
     news,
+    binance,
+    coinbase,
     volRanking: alls
   };
   const findTypes = [
@@ -208,7 +216,9 @@ function App() {
     'slowUps',
     'slowDowns',
     'alls',
-    'news'
+    'news',
+    'binance',
+    'coinbase'
   ];
   const buyTypes = ['upBuys', 'downBuys', 'bottoms', 'fuckingBottoms'];
   const sellTypes = ['upSells', 'downSells', 'tops', 'fuckingTops'];
@@ -224,6 +234,7 @@ function App() {
     'news',
     'volRanking'
   ];
+  const zoneTypes = ['binance', 'coinbase'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -253,7 +264,7 @@ function App() {
       const sortByVol = symbols => {
         return [...symbols].sort((s1, s2) => {
           const calcVol = s => {
-            const d = klines[s];
+            const d = klines[s] ? klines[s] : [[0, 0, 0, 0, 0, 0]];
             const _ = d[d.length - 1];
             return Number(_[5]);
           };
@@ -281,6 +292,17 @@ function App() {
       setNews(sortByVol(news));
       setFavs(favs);
 
+      const findZone = symbols => {
+        const all = Object.keys(klines);
+        return symbols.map(s => {
+          const res = all.filter(_ => _.indexOf(s) == 0);
+          return res.length ? res[0] : s;
+        });
+      };
+
+      setBinance(sortByVol(findZone(config.zones.binance)));
+      setCoinbase(sortByVol(findZone(config.zones.coinbase)));
+
       const clientWidth = document.body.clientWidth;
       const ecKlinesHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : clientWidth;
       setEcKlinesHeight(ecKlinesHeight);
@@ -303,6 +325,8 @@ function App() {
 
   const changeCurSymbol = _ => {
     setCurSymbol(_);
+    if (!allData[_]) return;
+
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
 
     setCurSymbolInfo({});
@@ -327,6 +351,7 @@ function App() {
     }
     setSymbolTypes(symbolTypes);
   };
+
   const changePreSymbol = () => {
     const curSymbols = state[curType];
     const idx = curSymbols.indexOf(curSymbol);
@@ -449,6 +474,17 @@ function App() {
             );
           })}
         </HomeRow>
+        <HomeRow mt={0}>
+          {zoneTypes.map(_ => {
+            return (
+              <div key={_}>
+                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
+                  {types[_]}({state[_].length})
+                </Button>
+              </div>
+            );
+          })}
+        </HomeRow>
 
         <Divider />
 
@@ -497,7 +533,8 @@ function App() {
                 return (
                   <div key={_}>
                     <Tag color={curSymbol === _ ? '#177ddc' : ''} onClick={() => changeCurSymbol(_)}>
-                      {favs.includes(_) && <StarFilled />} {getBaseAsset(_)}
+                      {favs.includes(_) && <StarFilled />}
+                      {!allData[_] && <StopOutlined />} {getBaseAsset(_)}
                     </Tag>
                   </div>
                 );

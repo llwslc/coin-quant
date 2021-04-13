@@ -1,3 +1,4 @@
+import zones from './zones';
 const env = process.env.REACT_APP_ENV;
 
 const Config = {
@@ -15,7 +16,8 @@ const Config = {
   },
   researchUrl: {
     base: 'https://research.binance.com/cn'
-  }
+  },
+  zones
 };
 
 const devConfig = {};
