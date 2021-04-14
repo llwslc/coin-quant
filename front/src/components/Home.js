@@ -463,7 +463,7 @@ function App() {
             );
           })}
         </HomeRow>
-        <HomeRow mt={0} className={'red'}>
+        <HomeRow mt={0} mb={0} className={'red'}>
           {sellTypes.map(_ => {
             return (
               <div key={_}>
