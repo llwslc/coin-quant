@@ -22,6 +22,7 @@ export default {
     'SFP',
     'AUDIO',
     'BAKE',
+    'BTCST',
     'INJ',
     'TWT',
     'PERP',
