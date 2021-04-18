@@ -1,3 +1,4 @@
+import axios from 'axios';
 import config from '../config';
 
 export const getBaseAsset = _ => {
@@ -294,6 +295,102 @@ export const findPoint = data => {
     bottoms,
     fuckingTops,
     fuckingBottoms
+  };
+};
+
+export const findTD9 = async (data, symbol) => {
+  const { data: price } = await axios.get(`${config.backend.base}${config.backend.price}`, {
+    params: { symbol }
+  });
+
+  const klines = [];
+  data.forEach(d => {
+    klines.push({
+      openTime: d[0],
+      open: d[1],
+      high: d[2],
+      low: d[3],
+      close: d[4],
+      volume: d[5]
+    });
+  });
+  klines.pop();
+  klines.push(price);
+
+  for (const k of klines) {
+    k.open = Number(k.open);
+    k.close = Number(k.close);
+    k.high = Number(k.high);
+    k.low = Number(k.low);
+  }
+
+  const DAY = 7;
+  const BEFORE_DAY = 3;
+
+  const topPoints = [];
+  const confirmTopPoints = [];
+  const bottomPoints = [];
+  const confirmBottomPoints = [];
+
+  const findTop = _arr => {
+    for (let i = 0, iLen = _arr.length - BEFORE_DAY; i < iLen; ++i) {
+      if (_arr[i].close > _arr[i + BEFORE_DAY].close) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const findConfirmTop = _arr => {
+    const idx = _arr.length - 1;
+    if (_arr[idx].high > _arr[idx - 2].high && _arr[idx].high > _arr[idx - 3].high) {
+      if (_arr[idx - 1].high > _arr[idx - 2].high && _arr[idx - 1].high > _arr[idx - 3].high) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const findBottom = _arr => {
+    for (let i = 0, iLen = _arr.length - BEFORE_DAY; i < iLen; ++i) {
+      if (_arr[i].close < _arr[i + BEFORE_DAY].close) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const findConfirmBottom = _arr => {
+    const idx = _arr.length - 1;
+    if (_arr[idx].low < _arr[idx - 2].low && _arr[idx].low < _arr[idx - 3].low) {
+      if (_arr[idx - 1].low < _arr[idx - 2].low && _arr[idx - 1].low < _arr[idx - 3].low) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  for (let i = DAY + BEFORE_DAY; i < klines.length; i++) {
+    const arr = klines.slice(i - (DAY + BEFORE_DAY), i);
+    if (findTop(arr)) {
+      topPoints.push(klines[i - 1]);
+      if (findConfirmTop(arr)) {
+        confirmTopPoints.push(klines[i - 1]);
+      }
+    }
+    if (findBottom(arr)) {
+      bottomPoints.push(klines[i - 1]);
+      if (findConfirmBottom(arr)) {
+        confirmBottomPoints.push(klines[i - 1]);
+      }
+    }
+  }
+
+  return {
+    topPoints,
+    confirmTopPoints,
+    bottomPoints,
+    confirmBottomPoints
   };
 };
 
