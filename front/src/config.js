@@ -5,6 +5,7 @@ const Config = {
   backend: {
     base: '/',
     klines: 'api/klines',
+    price: 'api/price',
     favs: 'api/favs'
   },
   localStorage: {
@@ -26,6 +27,7 @@ if (env === 'development') {
   devConfig.backend = {
     base: 'http://localhost:8888/',
     klines: 'api/klines',
+    price: 'api/price',
     favs: 'api/favs'
   };
 }
