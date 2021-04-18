@@ -89,6 +89,31 @@ app.get('/api/klines', async (req, res) => {
   res.send(result);
 });
 
+app.get('/api/price', async (req, res) => {
+  let result = {};
+  try {
+    const symbol = req.query.symbol;
+
+    const { data } = await axios.get(config.klinesUrl, {
+      params: { symbol, interval: '1d', limit: 1 }
+    });
+
+    const [curKlines = []] = data;
+
+    result = {
+      openTime: curKlines[0],
+      open: curKlines[1],
+      high: curKlines[2],
+      low: curKlines[3],
+      close: curKlines[4],
+      volume: curKlines[5]
+    };
+  } catch (error) {
+    logger.error('[price]', error.message ? error.message : error);
+  }
+  res.send(result);
+});
+
 app.get('/api/favs', async (req, res) => {
   let result = [];
   try {
