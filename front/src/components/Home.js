@@ -16,7 +16,16 @@ import {
 import { Button, Divider, Input, Layout, Modal, Select, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
-import { getBaseAsset, findNew, findPoint, getEcKlinesOpt, getEcVolsOpt, readFavorites, saveFavorites } from '../utils';
+import {
+  getBaseAsset,
+  findNew,
+  findPoint,
+  getEcKlinesOpt,
+  getEcVolsOpt,
+  readFavorites,
+  saveFavorites,
+  findTD9
+} from '../utils';
 
 const { Footer } = Layout;
 const { Option } = Select;
@@ -328,6 +337,8 @@ function App() {
     if (!allData[_]) return;
 
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
+
+    findTD9(allData[_], _);
 
     setCurSymbolInfo({});
     for (const coin of coinsInfo) {
