@@ -12,7 +12,7 @@ let db = {};
 const main = async () => {
   db = await sqlite(config.sqlite.dklines);
 
-  const openTime = 0; //new Date('2021-01-01 00:00:00').getTime();
+  const openTime = 0; // new Date('2021-01-01 00:00:00').getTime();
   const symbol = 'BTCUSDT';
   const klines = await db.allSync(`SELECT * FROM klines WHERE symbol = '${symbol}' and openTime > ${openTime};`);
   const { data } = await axios.get(config.klinesUrl, {
@@ -125,6 +125,15 @@ const main = async () => {
   for (const d of confirmBottomPoints) {
     console.log(new Date(d.openTime).toLocaleDateString());
   }
+
+  console.log(`topPoints ${new Date(topPoints[topPoints.length - 1].openTime).toLocaleDateString()}`);
+  console.log(
+    `confirmTopPoints ${new Date(confirmTopPoints[confirmTopPoints.length - 1].openTime).toLocaleDateString()}`
+  );
+  console.log(`bottomPoints ${new Date(bottomPoints[bottomPoints.length - 1].openTime).toLocaleDateString()}`);
+  console.log(
+    `confirmBottomPoints ${new Date(confirmBottomPoints[confirmBottomPoints.length - 1].openTime).toLocaleDateString()}`
+  );
 };
 
 main();
