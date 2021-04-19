@@ -1,4 +1,4 @@
-export default {
+const zones = {
   binance: [
     'LUNA',
     'BTT',
@@ -95,3 +95,5 @@ export default {
     'DNT'
   ]
 };
+
+export default zones;
