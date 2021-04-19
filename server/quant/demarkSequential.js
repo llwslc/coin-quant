@@ -12,8 +12,10 @@ let db = {};
 const main = async () => {
   db = await sqlite(config.sqlite.dklines);
 
-  const openTime = 0; // new Date('2021-01-01 00:00:00').getTime();
-  const symbol = 'BTCUSDT';
+  // const openTime = 0; // new Date('2021-01-01 00:00:00').getTime();
+  const daySec = 24 * 60 * 60 * 1000;
+  const openTime = Date.now() - 20 * daySec;
+  const symbol = 'MANAUSDT';
   const klines = await db.allSync(`SELECT * FROM klines WHERE symbol = '${symbol}' and openTime > ${openTime};`);
   const { data } = await axios.get(config.klinesUrl, {
     params: { symbol, interval: '1d', limit: 1 }
@@ -36,8 +38,11 @@ const main = async () => {
     k.low = Number(k.low);
   }
 
-  const DAY = 9;
-  const BEFORE_DAY = 4;
+  // const DAY = 9;
+  // const BEFORE_DAY = 4;
+
+  const DAY = 7;
+  const BEFORE_DAY = 3;
 
   const topPoints = [];
   const confirmTopPoints = [];
