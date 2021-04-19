@@ -339,6 +339,7 @@ function App() {
     if (!allData[_]) return;
 
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
+    setTd9Msg('');
 
     setTimeout(async () => {
       const { topPoints, confirmTopPoints, bottomPoints, confirmBottomPoints } = await findTD9(allData[_], _);
