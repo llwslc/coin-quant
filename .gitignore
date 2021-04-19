@@ -105,3 +105,5 @@ dist
 
 db
 package-lock.json
+
+.vscode

@@ -126,14 +126,16 @@ const main = async () => {
     console.log(new Date(d.openTime).toLocaleDateString());
   }
 
-  console.log(`topPoints ${new Date(topPoints[topPoints.length - 1].openTime).toLocaleDateString()}`);
-  console.log(
-    `confirmTopPoints ${new Date(confirmTopPoints[confirmTopPoints.length - 1].openTime).toLocaleDateString()}`
-  );
-  console.log(`bottomPoints ${new Date(bottomPoints[bottomPoints.length - 1].openTime).toLocaleDateString()}`);
-  console.log(
-    `confirmBottomPoints ${new Date(confirmBottomPoints[confirmBottomPoints.length - 1].openTime).toLocaleDateString()}`
-  );
+  const lastDate = list => {
+    if (list.length === 0) return '';
+
+    return new Date(list[list.length - 1].openTime).toLocaleDateString();
+  };
+
+  console.log(`topPoints ${lastDate(topPoints)}`);
+  console.log(`confirmTopPoints ${lastDate(confirmTopPoints)}`);
+  console.log(`bottomPoints ${lastDate(bottomPoints)}`);
+  console.log(`confirmBottomPoints ${lastDate(confirmBottomPoints)}`);
 };
 
 main();

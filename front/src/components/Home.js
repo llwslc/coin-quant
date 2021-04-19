@@ -154,6 +154,7 @@ function App() {
   const [curSymbol, setCurSymbol] = useState('');
   const [symbolTypes, setSymbolTypes] = useState([]);
   const [curSymbolInfo, setCurSymbolInfo] = useState({});
+  const [td9Msg, setTd9Msg] = useState('');
 
   const [ecKlinesOpt, setEcKlinesOpt] = useState({});
   const [ecVolsOpt, setEcVolsOpt] = useState({});
@@ -304,7 +305,7 @@ function App() {
       const findZone = symbols => {
         const all = Object.keys(klines);
         return symbols.map(s => {
-          const res = all.filter(_ => _.indexOf(s) == 0);
+          const res = all.filter(_ => _.indexOf(s) === 0);
           return res.length ? res[0] : s;
         });
       };
@@ -325,6 +326,7 @@ function App() {
   const changeCurType = _ => {
     setCurType(_);
     setCurSymbol('');
+    setTd9Msg('');
     setSymbolTypes([]);
 
     if (_ === 'volRanking') {
@@ -338,7 +340,34 @@ function App() {
 
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
 
-    findTD9(allData[_], _);
+    setTimeout(async () => {
+      const { topPoints, confirmTopPoints, bottomPoints, confirmBottomPoints } = await findTD9(allData[_], _);
+
+      const formatDate = (points, title) => {
+        const dates = points
+          .map(p => {
+            return new Date(p.openTime).toLocaleDateString();
+          })
+          .join(' ');
+
+        if (dates) {
+          return ` ${title} [${dates}]`;
+        } else {
+          return ``;
+        }
+      };
+
+      const td9Str = `${formatDate(topPoints, '顶')}${formatDate(confirmTopPoints, '大顶')}${formatDate(
+        bottomPoints,
+        '底'
+      )}${formatDate(confirmBottomPoints, '大底')}`;
+
+      if (td9Str) {
+        setTd9Msg(`TD9${td9Str}`);
+      } else {
+        setTd9Msg('');
+      }
+    }, 0);
 
     setCurSymbolInfo({});
     for (const coin of coinsInfo) {
@@ -589,10 +618,12 @@ function App() {
           </HomeSymbolTypes>
         </HomeRow>
 
+        {td9Msg && <HomeRow>{td9Msg}</HomeRow>}
+
         {curSymbol && (
           <HomeRow mt={0} mb={0}>
             <span>
-              <a href={curSymbolInfo.href} target="_blank">
+              <a href={curSymbolInfo.href} target="_blank" rel="noreferrer">
                 {curSymbolInfo.title}
               </a>{' '}
               {curSymbolInfo.description}

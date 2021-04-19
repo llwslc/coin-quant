@@ -308,9 +308,9 @@ export const findTD9 = async (data, symbol) => {
     klines.push({
       openTime: d[0],
       open: d[1],
-      high: d[2],
+      close: d[2],
       low: d[3],
-      close: d[4],
+      high: d[4],
       volume: d[5]
     });
   });
