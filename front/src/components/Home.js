@@ -27,7 +27,8 @@ import {
   findTD9
 } from '../utils';
 
-const { Footer } = Layout;
+import Footer from './Footer';
+
 const { Option } = Select;
 const { Link } = Typography;
 
@@ -685,9 +686,7 @@ function App() {
           </HomeEcharts>
         </HomeRow>
 
-        <Footer>
-          <Link href="#/help">Help</Link>
-        </Footer>
+        <Footer />
       </HomeMain>
 
       <Modal
