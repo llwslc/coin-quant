@@ -91,6 +91,16 @@ const HomeSymbolTypes = styled.div`
   }
 `;
 
+const HomeTd9Types = styled.div`
+  display: flex;
+  span {
+    margin-right: 8px;
+  }
+  .ant-tag {
+    margin-bottom: 0;
+  }
+`;
+
 const HomeSelectSymbol = styled.div`
   .ant-select {
     min-width: 200px;
@@ -154,7 +164,11 @@ function App() {
   const [curSymbol, setCurSymbol] = useState('');
   const [symbolTypes, setSymbolTypes] = useState([]);
   const [curSymbolInfo, setCurSymbolInfo] = useState({});
-  const [td9Msg, setTd9Msg] = useState('');
+  const [td9Exist, setTd9Exist] = useState(false);
+  const [td9Tops, setTd9Tops] = useState([]);
+  const [td9FuckingTops, setTd9FuckingTops] = useState([]);
+  const [td9Bottoms, setTd9Bottoms] = useState([]);
+  const [td9FuckingBottoms, setTd9FuckingBottoms] = useState([]);
 
   const [ecKlinesOpt, setEcKlinesOpt] = useState({});
   const [ecVolsOpt, setEcVolsOpt] = useState({});
@@ -186,7 +200,11 @@ function App() {
     news: '新币',
     binance: 'BINANCE',
     coinbase: 'COINBASE',
-    volRanking: '交易量排行'
+    volRanking: '交易量排行',
+    td9Tops: '顶',
+    td9FuckingTops: '大顶',
+    td9Bottoms: '底',
+    td9FuckingBottoms: '大底'
   };
   const state = {
     favs,
@@ -208,7 +226,12 @@ function App() {
     news,
     binance,
     coinbase,
-    volRanking: alls
+    volRanking: alls,
+
+    td9Tops,
+    td9FuckingTops,
+    td9Bottoms,
+    td9FuckingBottoms
   };
   const findTypes = [
     'upBuys',
@@ -245,6 +268,7 @@ function App() {
     'volRanking'
   ];
   const zoneTypes = ['binance', 'coinbase'];
+  const td9Types = ['td9Tops', 'td9FuckingTops', 'td9Bottoms', 'td9FuckingBottoms'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -323,10 +347,18 @@ function App() {
     fetchData();
   }, []);
 
+  const initTd9 = () => {
+    setTd9Exist(false);
+    setTd9Tops([]);
+    setTd9FuckingTops([]);
+    setTd9Bottoms([]);
+    setTd9FuckingBottoms([]);
+  };
+
   const changeCurType = _ => {
     setCurType(_);
     setCurSymbol('');
-    setTd9Msg('');
+    initTd9();
     setSymbolTypes([]);
 
     if (_ === 'volRanking') {
@@ -339,34 +371,26 @@ function App() {
     if (!allData[_]) return;
 
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
-    setTd9Msg('');
+    initTd9();
 
     setTimeout(async () => {
       const { topPoints, confirmTopPoints, bottomPoints, confirmBottomPoints } = await findTD9(allData[_], _);
 
-      const formatDate = (points, title) => {
-        const dates = points
-          .map(p => {
-            return new Date(p.openTime).toLocaleDateString();
-          })
-          .join(' ');
-
-        if (dates) {
-          return ` ${title} [${dates}]`;
-        } else {
-          return ``;
-        }
+      const formatDate = points => {
+        return points.map(p => {
+          const date = new Date(p.openTime);
+          return `${date.getMonth() + 1}/${date.getDate()}`;
+        });
       };
 
-      const td9Str = `${formatDate(topPoints, '顶')}${formatDate(confirmTopPoints, '大顶')}${formatDate(
-        bottomPoints,
-        '底'
-      )}${formatDate(confirmBottomPoints, '大底')}`;
-
-      if (td9Str) {
-        setTd9Msg(`TD9${td9Str}`);
+      if (topPoints.length || confirmTopPoints.length || bottomPoints.length || confirmBottomPoints.length) {
+        setTd9Exist(true);
+        setTd9Tops(formatDate(topPoints));
+        setTd9FuckingTops(formatDate(confirmTopPoints));
+        setTd9Bottoms(formatDate(bottomPoints));
+        setTd9FuckingBottoms(formatDate(confirmBottomPoints));
       } else {
-        setTd9Msg('');
+        initTd9();
       }
     }, 0);
 
@@ -619,7 +643,27 @@ function App() {
           </HomeSymbolTypes>
         </HomeRow>
 
-        {td9Msg && <HomeRow>{td9Msg}</HomeRow>}
+        {td9Exist && (
+          <HomeRow>
+            <HomeTd9Types>
+              <span>TD9:</span>
+              {td9Types.map(_ => {
+                if (state[_].length) {
+                  return (
+                    <div key={_}>
+                      <span>{types[_]}</span>
+                      {state[_].map(p => {
+                        return <Tag key={p}>{p}</Tag>;
+                      })}
+                    </div>
+                  );
+                } else {
+                  return <></>;
+                }
+              })}
+            </HomeTd9Types>
+          </HomeRow>
+        )}
 
         {curSymbol && (
           <HomeRow mt={0} mb={0}>
