@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Layout, Typography } from 'antd';
 
-const { Footer } = Layout;
+import Footer from './Footer';
+
 const { Link, Text } = Typography;
 
 const Help = styled.div`
@@ -81,9 +82,7 @@ function App() {
         </Link>
       </HelpWarning>
       <Help>
-        <Footer>
-          <Link href="#/">Home</Link>
-        </Footer>
+        <Footer />
       </Help>
     </Layout>
   );
