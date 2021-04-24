@@ -1,491 +1,261 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import MD5 from 'md5.js';
 import styled from 'styled-components';
-import {
-  PlusOutlined,
-  StarFilled,
-  StarOutlined,
-  StopOutlined,
-  CloudSyncOutlined,
-  CloudUploadOutlined,
-  CloudDownloadOutlined,
-  StepBackwardOutlined,
-  StepForwardOutlined
-} from '@ant-design/icons';
-import { Button, Divider, Input, Layout, Modal, Select, Tag, Typography } from 'antd';
+import { Divider, Layout, Spin, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
-import {
-  getBaseAsset,
-  findNew,
-  findPoint,
-  getEcKlinesOpt,
-  getEcVolsOpt,
-  readFavorites,
-  saveFavorites,
-  findTD9
-} from '../utils';
+import { getBaseAsset, getEcKlinesOpt, findTD9 } from '../utils';
 import Footer from './Footer';
 
-const { Option } = Select;
-const { Link } = Typography;
+const { Text } = Typography;
 
-const HomeMain = styled.div`
-  .ant-layout-footer {
-    margin-top: 100px;
-    display: flex;
-    justify-content: center;
-  }
-
+const Td9Main = styled.div`
   .ant-divider-horizontal {
     margin: 0;
   }
 `;
 
-const HomeRow = styled.div`
-  margin: 10px auto;
-  max-width: 1280px;
+const Td9Row = styled.div`
+  margin: 8px auto 0;
+  max-width: ${props => (props.mw !== undefined ? `${props.mw}px` : '1280px')};
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 
-  margin-top: ${props => (props.mt !== undefined ? `${props.mt}px` : '10px')};
-  margin-bottom: ${props => (props.mb !== undefined ? `${props.mb}px` : '10px')};
-
   .ant-tag {
     margin-bottom: 8px;
   }
-
-  &.green {
-    span {
-      color: SpringGreen;
-    }
-  }
-
-  &.red {
-    span {
-      color: OrangeRed;
-    }
-  }
 `;
 
-const HomeSymbolTypes = styled.div`
-  width: 100%;
-  margin: 10px 20% 0;
-  display: flex;
-  justify-content: space-between;
+const Td9Summary = styled.div`
+  flex: 1 1 30%;
 
-  div {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  div:nth-child(1) {
-    display: block;
-    width: 30%;
+  .ant-typography {
+    margin-right: 8px;
   }
 
   @media (max-width: 768px) {
-    margin: 10px 5% 0;
+    flex: 1 1 100%;
+    margin: 0 20px;
   }
 `;
 
-const HomeSelectSymbol = styled.div`
-  .ant-select {
-    min-width: 200px;
-  }
-  .ant-btn {
-    margin-left: 20px;
-  }
-`;
-
-const HomeEcharts = styled.div`
+const Td9Load = styled.div`
   width: 100%;
+  height: 100px;
 `;
 
-const HomeCloudFavsInput = styled.div`
-  display: flex;
-  justify-content: normal;
-
-  .ant-tag {
-    margin-top: 10px;
-    white-space: pre-wrap;
-  }
-`;
-
-const HomeCloudFavsButton = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-
-  .ant-btn {
-    width: 45%;
-  }
+const Td9Echarts = styled.div`
+  width: 100%;
 `;
 
 function App() {
   const [allData, setAllData] = useState([]);
   const [coinsInfo, setCoinInfo] = useState([]);
 
-  const [favs, setFavs] = useState([]);
-  const [alls, setAlls] = useState([]);
-  const [news, setNews] = useState([]);
-  const [ups, setUps] = useState([]);
-  const [upBuys, setUpBuys] = useState([]);
-  const [upSells, setUpSells] = useState([]);
-  const [downs, setDowns] = useState([]);
-  const [downBuys, setDownBuys] = useState([]);
-  const [downSells, setDownSells] = useState([]);
-  const [fastUps, setFastUps] = useState([]);
-  const [fastDowns, setFastDowns] = useState([]);
-  const [slowUps, setSlowUps] = useState([]);
-  const [slowDowns, setSlowDowns] = useState([]);
-  const [tops, setTops] = useState([]);
-  const [bottoms, setBottoms] = useState([]);
-  const [fuckingTops, setFuckingTops] = useState([]);
-  const [fuckingBottoms, setFuckingBottoms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadTip, setLoadTip] = useState('');
 
-  const [binance, setBinance] = useState([]);
-  const [coinbase, setCoinbase] = useState([]);
+  const [td9Dates, setTd9Dates] = useState([]);
+  const [td9OPoints, setTd9OPoints] = useState({});
 
-  const [searchSymbol, setSearchSymbol] = useState('');
-  const [curType, setCurType] = useState('favs');
+  const [curDate, setCurDate] = useState('');
+  const [curType, setCurType] = useState('');
+  const [curSymbols, setCurSymbols] = useState([]);
   const [curSymbol, setCurSymbol] = useState('');
-  const [symbolTypes, setSymbolTypes] = useState([]);
+
   const [curSymbolInfo, setCurSymbolInfo] = useState({});
-  const [td9Msg, setTd9Msg] = useState('');
 
   const [ecKlinesOpt, setEcKlinesOpt] = useState({});
-  const [ecVolsOpt, setEcVolsOpt] = useState({});
-
   const [ecKlinesHeight, setEcKlinesHeight] = useState(300);
-  const [ecVolsHeight, setEcVolsHeight] = useState(600);
-  const [showUpdateFavs, setShowUpdateFavs] = useState(false);
-  const [favsKey, setFavsKey] = useState('');
-  const [favsSuccessMsg, setFavsSuccessMsg] = useState('');
-  const [favsErrMsg, setFavsErrMsg] = useState('');
 
   const types = {
-    favs: '自选',
-    upBuys: '上涨买点',
-    downBuys: '下跌买点',
-    upSells: '上涨卖点',
-    downSells: '下跌卖点',
-    tops: '处于顶部',
-    bottoms: '处于底部',
-    fuckingTops: '确认顶部',
-    fuckingBottoms: '确认底部',
-    ups: '持续上涨',
-    downs: '持续下跌',
-    fastUps: '暴力上涨',
-    fastDowns: '暴力下跌',
-    slowUps: '微弱上涨',
-    slowDowns: '微弱下跌',
-    alls: '全部',
-    news: '新币',
-    binance: 'BINANCE',
-    coinbase: 'COINBASE',
-    volRanking: '交易量排行'
+    topPoints: '顶',
+    confirmTopPoints: '大顶',
+    bottomPoints: '底',
+    confirmBottomPoints: '大底'
   };
-  const state = {
-    favs,
-    ups,
-    upBuys,
-    upSells,
-    downs,
-    downBuys,
-    downSells,
-    fastUps,
-    fastDowns,
-    slowUps,
-    slowDowns,
-    tops,
-    bottoms,
-    fuckingTops,
-    fuckingBottoms,
-    alls,
-    news,
-    binance,
-    coinbase,
-    volRanking: alls
+  const colors = {
+    topPoints: '#d87a16',
+    confirmTopPoints: '#d32029',
+    bottomPoints: '#177ddc',
+    confirmBottomPoints: '#49aa19'
   };
-  const findTypes = [
-    'upBuys',
-    'downBuys',
-    'upSells',
-    'downSells',
-    'tops',
-    'bottoms',
-    'fuckingTops',
-    'fuckingBottoms',
-    'ups',
-    'downs',
-    'fastUps',
-    'fastDowns',
-    'slowUps',
-    'slowDowns',
-    'alls',
-    'news',
-    'binance',
-    'coinbase'
-  ];
-  const buyTypes = ['upBuys', 'downBuys', 'bottoms', 'fuckingBottoms'];
-  const sellTypes = ['upSells', 'downSells', 'tops', 'fuckingTops'];
-  const trendTypes = [
-    'favs',
-    'ups',
-    'downs',
-    'fastUps',
-    'fastDowns',
-    'slowUps',
-    'slowDowns',
-    'alls',
-    'news',
-    'volRanking'
-  ];
-  const zoneTypes = ['binance', 'coinbase'];
 
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get(`${config.backend.base}${config.backend.klines}`);
 
-      const { klines = [] } = data;
-
+      const { klines = [], coins = [] } = data;
       const symbols = Object.keys(klines);
-      for (let i = 0; i < 3; i++) {
-        // for (let i = 0; i < symbols.length; i++) {
-        const _ = symbols[i];
-        const { topPoints, confirmTopPoints, bottomPoints, confirmBottomPoints } = await findTD9(klines[_], _);
 
-        const formatDate = points => {
-          return points.map(p => {
-            const date = new Date(p.openTime);
-            return `${date.getMonth() + 1}/${date.getDate()}`;
+      const fetchTd9 = async _ => {
+        try {
+          return await findTD9(klines[_], _);
+        } catch (error) {
+          return await fetchTd9(_);
+        }
+      };
+
+      const sortByVol = symbols => {
+        return [...symbols].sort((s1, s2) => {
+          const calcVol = s => {
+            const d = klines[s] ? klines[s] : [[0, 0, 0, 0, 0, 0]];
+            const _ = d[d.length - 1];
+            return Number(_[5]);
+          };
+          return calcVol(s2) - calcVol(s1);
+        });
+      };
+
+      const dates = {};
+
+      for (let i = 0, len = symbols.length; i < len; i++) {
+        const _ = symbols[i];
+        const { topPoints, confirmTopPoints, bottomPoints, confirmBottomPoints } = await fetchTd9(_);
+
+        const findDate = (s, p) => {
+          const key = Object.keys(p)[0];
+          const points = Object.values(p)[0];
+
+          points.forEach(_ => {
+            const openTime = _.openTime;
+
+            if (dates[openTime]) {
+              if (dates[openTime][key]) {
+                dates[openTime][key] = sortByVol([...dates[openTime][key], s]);
+              } else {
+                dates[openTime][key] = [s];
+              }
+            } else {
+              dates[openTime] = {
+                [key]: [s]
+              };
+            }
           });
         };
+
+        findDate(_, { topPoints });
+        findDate(_, { confirmTopPoints });
+        findDate(_, { bottomPoints });
+        findDate(_, { confirmBottomPoints });
+
+        setLoadTip(`${i} / ${len}`);
       }
+
+      setTd9OPoints(dates);
+      setTd9Dates(Object.keys(dates).sort((a, b) => b - a));
+
+      setAllData(klines);
+      setCoinInfo(coins);
+
+      setLoading(false);
+
+      const clientWidth = document.body.clientWidth;
+      const ecKlinesHeight = clientWidth > 786 ? (clientWidth / 2 > 400 ? 400 : 400) : clientWidth;
+      setEcKlinesHeight(ecKlinesHeight);
     };
     fetchData();
   }, []);
 
-  const changeCurType = _ => {};
+  const formatDate = _ => {
+    const d = new Date(parseInt(_));
+    return `${d.getMonth() + 1}/${d.getDate()}`;
+  };
 
-  const changeCurSymbol = _ => {};
+  const changeCurPoint = (date, type) => {
+    setCurDate(date);
+    setCurType(type);
+    setCurSymbols(td9OPoints[date][type]);
+    setCurSymbol('');
+  };
 
-  const changePreSymbol = () => {};
+  const changeCurSymbol = _ => {
+    setCurSymbol(_);
+    if (!allData[_]) return;
 
-  const changeNxtSymbol = () => {};
+    setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
 
-  const addFavs = _ => {};
-
-  const changeFav = _ => {};
-
-  const removeFavs = _ => {};
-
-  const showFavsModal = () => {};
-
-  const downloadFavs = async () => {};
-
-  const uploadFavs = async () => {};
+    setCurSymbolInfo({});
+    for (const coin of coinsInfo) {
+      if (coin.title.includes(`(${getBaseAsset(_)})`) || coin.title.includes(`（${getBaseAsset(_)}）`)) {
+        setCurSymbolInfo({
+          ...coin,
+          href: `${config.researchUrl.base}${coin.href}`
+        });
+      }
+    }
+  };
 
   return (
     <Layout>
-      <HomeMain>
-        <HomeRow mb={0}>
-          {trendTypes.map(_ => {
+      <Td9Main>
+        <Td9Row mw={1000}>
+          {td9Dates.map(_ => {
             return (
-              <div key={_}>
-                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
-                  {types[_]}({state[_].length})
-                </Button>
-              </div>
+              <Td9Summary key={_}>
+                <Text>__{formatDate(_)}__</Text>
+                {Object.keys(td9OPoints[_]).map(t => {
+                  return (
+                    <Tag
+                      key={t}
+                      color={_ === curDate && t === curType ? 'default' : colors[t]}
+                      onClick={() => changeCurPoint(_, t)}
+                    >
+                      {types[t]}({td9OPoints[_][t].length})
+                    </Tag>
+                  );
+                })}
+              </Td9Summary>
             );
           })}
-        </HomeRow>
-        <HomeRow mt={0} mb={0} className={'green'}>
-          {buyTypes.map(_ => {
-            return (
-              <div key={_}>
-                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
-                  {types[_]}({state[_].length})
-                </Button>
-              </div>
-            );
-          })}
-        </HomeRow>
-        <HomeRow mt={0} mb={0} className={'red'}>
-          {sellTypes.map(_ => {
-            return (
-              <div key={_}>
-                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
-                  {types[_]}({state[_].length})
-                </Button>
-              </div>
-            );
-          })}
-        </HomeRow>
-        <HomeRow mt={0}>
-          {zoneTypes.map(_ => {
-            return (
-              <div key={_}>
-                <Button type={curType === _ ? 'primary' : 'link'} onClick={() => changeCurType(_)}>
-                  {types[_]}({state[_].length})
-                </Button>
-              </div>
-            );
-          })}
-        </HomeRow>
+        </Td9Row>
 
-        <Divider />
+        {loading && (
+          <Spin spinning={loading} tip={loadTip}>
+            <Td9Load />
+          </Spin>
+        )}
 
-        {curType === 'favs' ? (
+        {curSymbols.length > 0 && (
           <>
-            <HomeRow>
-              <HomeSelectSymbol>
-                <Select showSearch placeholder="" onChange={_ => changeFav(_)}>
-                  {alls.map(_ => (
-                    <Option key={_} value={_}>
-                      {_}
-                    </Option>
-                  ))}
-                </Select>
-                <Button
-                  type="primary"
-                  disabled={favs.includes(searchSymbol)}
-                  icon={<PlusOutlined />}
-                  onClick={() => addFavs()}
-                />
-                <Button type="primary" icon={<CloudSyncOutlined />} onClick={() => showFavsModal()} />
-              </HomeSelectSymbol>
-            </HomeRow>
+            <Divider />
 
-            <HomeRow>
-              {state[curType].map(_ => {
+            <Td9Row>
+              {curSymbols.map(_ => {
                 return (
                   <div key={_}>
-                    <Tag
-                      color={curSymbol === _ ? '#177ddc' : ''}
-                      closable
-                      onClose={() => removeFavs(_)}
-                      onClick={() => changeCurSymbol(_)}
-                    >
+                    <Tag color={curSymbol === _ ? '#177ddc' : ''} onClick={() => changeCurSymbol(_)}>
                       {getBaseAsset(_)}
                     </Tag>
                   </div>
                 );
               })}
-            </HomeRow>
+            </Td9Row>
+
+            <Divider />
           </>
-        ) : (
-          curType !== 'volRanking' && (
-            <HomeRow>
-              {state[curType].map(_ => {
-                return (
-                  <div key={_}>
-                    <Tag color={curSymbol === _ ? '#177ddc' : ''} onClick={() => changeCurSymbol(_)}>
-                      {favs.includes(_) && <StarFilled />}
-                      {!allData[_] && <StopOutlined />} {getBaseAsset(_)}
-                    </Tag>
-                  </div>
-                );
-              })}
-            </HomeRow>
-          )
         )}
 
-        <Divider />
-
-        <HomeRow>
-          <HomeSymbolTypes>
-            <div>
-              {state[curType].length > 0 && curSymbol && (
-                <>
-                  <Tag onClick={() => changePreSymbol()}>
-                    <StepBackwardOutlined />
-                  </Tag>
-                  <Tag onClick={() => changeNxtSymbol()}>
-                    <StepForwardOutlined />
-                  </Tag>
-                </>
-              )}
-            </div>
-            <div>
-              {curSymbol && (
-                <Tag onClick={() => addFavs(curSymbol)}>
-                  {favs.includes(curSymbol) ? <StarFilled /> : <StarOutlined />}
-                </Tag>
-              )}
-              {symbolTypes.map(_ => {
-                return (
-                  <div key={_}>
-                    <Tag color={curType === _ ? '#177ddc' : ''} onClick={() => setCurType(_)}>
-                      {types[_]}
-                    </Tag>
-                  </div>
-                );
-              })}
-            </div>
-          </HomeSymbolTypes>
-        </HomeRow>
-
-        {td9Msg && <HomeRow>{td9Msg}</HomeRow>}
-
         {curSymbol && (
-          <HomeRow mt={0} mb={0}>
+          <Td9Row mt={0} mb={0}>
             <span>
               <a href={curSymbolInfo.href} target="_blank" rel="noreferrer">
                 {curSymbolInfo.title}
               </a>{' '}
               {curSymbolInfo.description}
             </span>
-          </HomeRow>
+          </Td9Row>
         )}
 
-        <HomeRow>
-          <HomeEcharts>
+        <Td9Row>
+          <Td9Echarts>
             {curSymbol && <ReactECharts theme="dark" style={{ height: `${ecKlinesHeight}px` }} option={ecKlinesOpt} />}
-            {curType === 'volRanking' && (
-              <ReactECharts theme="dark" style={{ height: `${ecVolsHeight}px` }} option={ecVolsOpt} />
-            )}
-          </HomeEcharts>
-        </HomeRow>
+          </Td9Echarts>
+        </Td9Row>
 
         <Footer />
-      </HomeMain>
-
-      <Modal
-        title=""
-        footer={null}
-        bodyStyle={{ padding: 20 }}
-        width={240}
-        closable={false}
-        visible={showUpdateFavs}
-        onCancel={() => setShowUpdateFavs(false)}
-      >
-        <HomeCloudFavsInput>
-          <Input placeholder="key" value={favsKey} onChange={e => setFavsKey(e.target.value)} />
-        </HomeCloudFavsInput>
-
-        <HomeCloudFavsInput>{favsSuccessMsg && <Tag color="success">{favsSuccessMsg}</Tag>}</HomeCloudFavsInput>
-        <HomeCloudFavsInput>{favsErrMsg && <Tag color="error">{favsErrMsg}</Tag>}</HomeCloudFavsInput>
-
-        <HomeCloudFavsButton>
-          <Button
-            type="primary"
-            disabled={!favsKey.length}
-            icon={<CloudDownloadOutlined />}
-            onClick={() => downloadFavs()}
-          />
-          <Button
-            type="primary"
-            danger
-            disabled={!favsKey.length}
-            icon={<CloudUploadOutlined />}
-            onClick={() => uploadFavs()}
-          />
-        </HomeCloudFavsButton>
-      </Modal>
+      </Td9Main>
     </Layout>
   );
 }
