@@ -13,7 +13,7 @@ import {
   StepBackwardOutlined,
   StepForwardOutlined
 } from '@ant-design/icons';
-import { Button, Divider, Input, Layout, Modal, Select, Tag, Typography } from 'antd';
+import { Button, Divider, Input, Layout, Modal, Select, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
 import {
@@ -30,29 +30,22 @@ import {
 import Footer from './Footer';
 
 const { Option } = Select;
-const { Link } = Typography;
 
 const HomeMain = styled.div`
-  .ant-layout-footer {
-    margin-top: 100px;
-    display: flex;
-    justify-content: center;
-  }
-
   .ant-divider-horizontal {
     margin: 0;
   }
 `;
 
 const HomeRow = styled.div`
-  margin: 10px auto;
+  margin: 8px auto;
   max-width: 1280px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 
-  margin-top: ${props => (props.mt !== undefined ? `${props.mt}px` : '10px')};
-  margin-bottom: ${props => (props.mb !== undefined ? `${props.mb}px` : '10px')};
+  margin-top: ${props => (props.mt !== undefined ? `${props.mt}px` : '8px')};
+  margin-bottom: ${props => (props.mb !== undefined ? `${props.mb}px` : '8px')};
 
   .ant-tag {
     margin-bottom: 8px;
@@ -73,7 +66,7 @@ const HomeRow = styled.div`
 
 const HomeSymbolTypes = styled.div`
   width: 100%;
-  margin: 10px 20% 0;
+  margin: 0 20%;
   display: flex;
   justify-content: space-between;
 
@@ -556,7 +549,7 @@ function App() {
 
         {curType === 'favs' ? (
           <>
-            <HomeRow>
+            <HomeRow mb={0}>
               <HomeSelectSymbol>
                 <Select showSearch placeholder="" onChange={_ => changeFav(_)}>
                   {alls.map(_ => (
@@ -575,7 +568,7 @@ function App() {
               </HomeSelectSymbol>
             </HomeRow>
 
-            <HomeRow>
+            <HomeRow mb={0}>
               {state[curType].map(_ => {
                 return (
                   <div key={_}>
@@ -594,7 +587,7 @@ function App() {
           </>
         ) : (
           curType !== 'volRanking' && (
-            <HomeRow>
+            <HomeRow mb={0}>
               {state[curType].map(_ => {
                 return (
                   <div key={_}>
@@ -611,7 +604,7 @@ function App() {
 
         <Divider />
 
-        <HomeRow>
+        <HomeRow mb={0}>
           <HomeSymbolTypes>
             <div>
               {state[curType].length > 0 && curSymbol && (
@@ -645,7 +638,7 @@ function App() {
         </HomeRow>
 
         {td9Exist && (
-          <HomeRow>
+          <HomeRow mt={0}>
             <HomeTd9Types>
               <span>TD9:</span>
               {td9Types.map(_ => {
