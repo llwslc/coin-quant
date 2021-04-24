@@ -93,6 +93,7 @@ app.get('/api/price', async (req, res) => {
   let result = {};
   try {
     const symbol = req.query.symbol;
+    if (!symbol) return res.send(result);
 
     const { data } = await axios.get(config.klinesUrl, {
       params: { symbol, interval: '1d', limit: 1 }
