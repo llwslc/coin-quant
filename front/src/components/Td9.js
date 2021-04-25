@@ -43,7 +43,7 @@ const Td9Summary = styled.div`
 
 const Td9Load = styled.div`
   width: 100%;
-  height: 200px;
+  height: 500px;
 `;
 
 const Td9SymbolDates = styled.div`
@@ -215,7 +215,7 @@ function App() {
       for (const key in pDate) {
         if (pDate[key].indexOf(_) > -1) {
           if (symbolTd9[key]) {
-            symbolTd9[key].push(d);
+            symbolTd9[key] = [d, ...symbolTd9[key]];
           } else {
             symbolTd9[key] = [d];
           }
