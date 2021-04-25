@@ -63,6 +63,8 @@ const Td9SymbolDates = styled.div`
   }
 
   p {
+    margin-bottom: 0;
+
     span:nth-child(1) {
       margin-right: 8px;
     }
