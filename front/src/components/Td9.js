@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { StepBackwardOutlined, StepForwardOutlined } from '@ant-design/icons';
 import { Divider, Layout, Spin, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
@@ -42,7 +43,34 @@ const Td9Summary = styled.div`
 
 const Td9Load = styled.div`
   width: 100%;
-  height: 100px;
+  height: 200px;
+`;
+
+const Td9SymbolDates = styled.div`
+  width: 100%;
+  margin: 0 20%;
+  display: flex;
+  justify-content: space-between;
+
+  div {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  div:nth-child(1) {
+    display: block;
+    width: 30%;
+  }
+
+  p {
+    span:nth-child(1) {
+      margin-right: 8px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin: 10px 5% 0;
+  }
 `;
 
 const Td9Echarts = styled.div`
@@ -63,6 +91,7 @@ function App() {
   const [curType, setCurType] = useState('');
   const [curSymbols, setCurSymbols] = useState([]);
   const [curSymbol, setCurSymbol] = useState('');
+  const [curSymbolTd9, setCurSymbolTd9] = useState({});
 
   const [curSymbolInfo, setCurSymbolInfo] = useState({});
 
@@ -88,6 +117,7 @@ function App() {
 
       const { klines = [], coins = [] } = data;
       const symbols = Object.keys(klines);
+      const dates = {};
 
       const fetchTd9 = async _ => {
         try {
@@ -108,7 +138,7 @@ function App() {
         });
       };
 
-      const dates = {};
+      if (!symbols.length) return;
 
       for (let i = 0, len = symbols.length; i < len; i++) {
         const _ = symbols[i];
@@ -168,6 +198,7 @@ function App() {
     setCurType(type);
     setCurSymbols(td9OPoints[date][type]);
     setCurSymbol('');
+    setCurSymbolTd9({});
   };
 
   const changeCurSymbol = _ => {
@@ -176,7 +207,21 @@ function App() {
 
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
 
-    setCurSymbolInfo({});
+    const symbolTd9 = {};
+    td9Dates.forEach(d => {
+      const pDate = td9OPoints[d];
+      for (const key in pDate) {
+        if (pDate[key].indexOf(_) > -1) {
+          if (symbolTd9[key]) {
+            symbolTd9[key].push(d);
+          } else {
+            symbolTd9[key] = [d];
+          }
+        }
+      }
+    });
+    setCurSymbolTd9(symbolTd9);
+
     for (const coin of coinsInfo) {
       if (coin.title.includes(`(${getBaseAsset(_)})`) || coin.title.includes(`（${getBaseAsset(_)}）`)) {
         setCurSymbolInfo({
@@ -187,6 +232,22 @@ function App() {
     }
   };
 
+  const changePreSymbol = () => {
+    const idx = curSymbols.indexOf(curSymbol);
+    const preSymbol = curSymbols[idx > 0 ? idx - 1 : 0];
+    if (preSymbol !== curSymbol) {
+      changeCurSymbol(preSymbol);
+    }
+  };
+
+  const changeNxtSymbol = () => {
+    const idx = curSymbols.indexOf(curSymbol);
+    const nxtSymbol = curSymbols[idx < curSymbols.length - 1 ? idx + 1 : curSymbols.length - 1];
+    if (nxtSymbol !== curSymbol) {
+      changeCurSymbol(nxtSymbol);
+    }
+  };
+
   return (
     <Layout>
       <Td9Main>
@@ -194,7 +255,7 @@ function App() {
           {td9Dates.map(_ => {
             return (
               <Td9Summary key={_}>
-                <Text>__{formatDate(_)}__</Text>
+                <Text>_{formatDate(_)}_</Text>
                 {Object.keys(td9OPoints[_]).map(t => {
                   return (
                     <Tag
@@ -236,6 +297,40 @@ function App() {
             <Divider />
           </>
         )}
+
+        <Td9Row mt={0} mb={0}>
+          <Td9SymbolDates>
+            {curSymbols.length > 0 && curSymbol && (
+              <>
+                <div>
+                  <Tag onClick={() => changePreSymbol()}>
+                    <StepBackwardOutlined />
+                  </Tag>
+                  <Tag onClick={() => changeNxtSymbol()}>
+                    <StepForwardOutlined />
+                  </Tag>
+                </div>
+
+                <div>
+                  {Object.keys(types).map(_ => {
+                    if (curSymbolTd9[_]) {
+                      return (
+                        <p key={_}>
+                          <span>{types[_]}</span>
+                          {curSymbolTd9[_].map(d => {
+                            return <Tag key={d}>{formatDate(d)}</Tag>;
+                          })}
+                        </p>
+                      );
+                    } else {
+                      return <></>;
+                    }
+                  })}
+                </div>
+              </>
+            )}
+          </Td9SymbolDates>
+        </Td9Row>
 
         {curSymbol && (
           <Td9Row mt={0} mb={0}>
