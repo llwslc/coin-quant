@@ -224,6 +224,7 @@ function App() {
     });
     setCurSymbolTd9(symbolTd9);
 
+    setCurSymbolInfo({});
     for (const coin of coinsInfo) {
       if (coin.title.includes(`(${getBaseAsset(_)})`) || coin.title.includes(`（${getBaseAsset(_)}）`)) {
         setCurSymbolInfo({
