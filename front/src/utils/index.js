@@ -7,6 +7,11 @@ export const sleep = async (duration = 100) => {
   });
 };
 
+export const formatDate = _ => {
+  const d = new Date(parseInt(_));
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+};
+
 export const getBaseAsset = _ => {
   const fait1 = 'USDT';
   const fait2 = 'BUSD';
@@ -400,7 +405,7 @@ export const findTD9 = async (data, symbol) => {
   };
 };
 
-export const getEcKlinesOpt = (data, symbol) => {
+export const getEcKlinesOpt = (data, symbol, point = false) => {
   const upColor = '#00DA3C';
   const upBorderColor = '#008F28';
   const downColor = '#EC0000';
@@ -408,6 +413,7 @@ export const getEcKlinesOpt = (data, symbol) => {
   const oma7Color = '#FFD700';
   const cma7Color = '#FF00FF';
   const crossColor = '#FFFFFF';
+  const pointColor = '#6FB8F7';
 
   const calculateMA = (values, dayCount = 7, open = false) => {
     const result = [];
@@ -506,6 +512,21 @@ export const getEcKlinesOpt = (data, symbol) => {
   const optData = splitData(data);
   // golden/death cross
   const { keyDate, crossData, crossChange, trueDate, virtualCrossData, virtualCrossChange } = calcCross(optData);
+
+  const markPoint = {};
+  if (point) {
+    const pInt = parseInt(point);
+    const values = data.filter(_ => _[0] === pInt);
+    markPoint.data = [
+      {
+        coord: [new Date(pInt).toLocaleDateString(), values.length ? values[0][4] : data[0][4]],
+        value: formatDate(point),
+        itemStyle: {
+          color: pointColor
+        }
+      }
+    ];
+  }
 
   return {
     title: {
@@ -608,6 +629,7 @@ export const getEcKlinesOpt = (data, symbol) => {
           borderColor: upBorderColor,
           borderColor0: downBorderColor
         },
+        markPoint,
         markLine: {
           symbol: ['none', 'none'],
           lineStyle: {
