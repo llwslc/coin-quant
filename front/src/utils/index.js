@@ -1,6 +1,12 @@
 import axios from 'axios';
 import config from '../config';
 
+export const sleep = async (duration = 100) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, duration);
+  });
+};
+
 export const getBaseAsset = _ => {
   const fait1 = 'USDT';
   const fait2 = 'BUSD';
