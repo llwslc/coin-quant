@@ -5,7 +5,7 @@ import { StepBackwardOutlined, StepForwardOutlined } from '@ant-design/icons';
 import { Divider, Layout, Spin, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
-import { getBaseAsset, getEcKlinesOpt, findTD9 } from '../utils';
+import { getBaseAsset, getEcKlinesOpt, findTD9, sleep } from '../utils';
 import Footer from './Footer';
 
 const { Text } = Typography;
@@ -123,6 +123,7 @@ function App() {
 
       const fetchTd9 = async _ => {
         try {
+          await sleep();
           return await findTD9(klines[_], _);
         } catch (error) {
           return await fetchTd9(_);
