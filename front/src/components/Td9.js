@@ -5,7 +5,7 @@ import { StepBackwardOutlined, StepForwardOutlined } from '@ant-design/icons';
 import { Divider, Layout, Spin, Tag, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
-import { getBaseAsset, getEcKlinesOpt, findTD9, sleep } from '../utils';
+import { getBaseAsset, getEcKlinesOpt, findTD9, sleep, formatDate } from '../utils';
 import Footer from './Footer';
 
 const { Text } = Typography;
@@ -191,11 +191,6 @@ function App() {
     fetchData();
   }, []);
 
-  const formatDate = _ => {
-    const d = new Date(parseInt(_));
-    return `${d.getMonth() + 1}/${d.getDate()}`;
-  };
-
   const changeCurPoint = (date, type) => {
     setCurDate(date);
     setCurType(type);
@@ -208,7 +203,7 @@ function App() {
     setCurSymbol(_);
     if (!allData[_]) return;
 
-    setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
+    setEcKlinesOpt(getEcKlinesOpt(allData[_], _, curDate));
 
     const symbolTd9 = {};
     td9Dates.forEach(d => {
@@ -317,18 +312,20 @@ function App() {
 
                 <div>
                   {Object.keys(types).map(_ => {
-                    if (curSymbolTd9[_]) {
-                      return (
-                        <p key={_}>
-                          <span>{types[_]}</span>
-                          {curSymbolTd9[_].map(d => {
-                            return <Tag key={d}>{formatDate(d)}</Tag>;
-                          })}
-                        </p>
-                      );
-                    } else {
-                      return <></>;
-                    }
+                    return (
+                      <p key={_}>
+                        {curSymbolTd9[_] ? (
+                          <>
+                            <span>{types[_]}</span>
+                            {curSymbolTd9[_].map(d => {
+                              return <Tag key={d}>{formatDate(d)}</Tag>;
+                            })}
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </p>
+                    );
                   })}
                 </div>
               </>
