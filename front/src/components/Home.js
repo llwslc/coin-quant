@@ -642,18 +642,20 @@ function App() {
             <HomeTd9Types>
               <span>TD9:</span>
               {td9Types.map(_ => {
-                if (state[_].length) {
-                  return (
-                    <div key={_}>
-                      <span>{types[_]}</span>
-                      {state[_].map(p => {
-                        return <Tag key={p}>{p}</Tag>;
-                      })}
-                    </div>
-                  );
-                } else {
-                  return <></>;
-                }
+                return (
+                  <div key={_}>
+                    {state[_].length ? (
+                      <>
+                        <span>{types[_]}</span>
+                        {state[_].map(p => {
+                          return <Tag key={p}>{p}</Tag>;
+                        })}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                );
               })}
             </HomeTd9Types>
           </HomeRow>
