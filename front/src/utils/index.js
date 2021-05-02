@@ -381,7 +381,7 @@ export const findTD9 = async (data, symbol) => {
     return false;
   };
 
-  for (let i = DAY + BEFORE_DAY; i < klines.length; i++) {
+  for (let i = DAY + BEFORE_DAY; i <= klines.length; i++) {
     const arr = klines.slice(i - (DAY + BEFORE_DAY), i);
     if (findTop(arr)) {
       topPoints.push(klines[i - 1]);
