@@ -29,7 +29,7 @@ const Td9Row = styled.div`
 `;
 
 const Td9Summary = styled.div`
-  flex: 1 1 30%;
+  flex: 0 1 30%;
 
   .ant-typography {
     margin-right: 8px;
@@ -250,7 +250,7 @@ function App() {
   return (
     <Layout>
       <Td9Main>
-        <Td9Row mw={1000}>
+        <Td9Row mw={1120}>
           {td9Dates.map(_ => {
             return (
               <Td9Summary key={_}>
