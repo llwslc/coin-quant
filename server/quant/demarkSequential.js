@@ -96,7 +96,7 @@ const main = async () => {
     console.log(`===========`);
   };
 
-  for (let i = DAY + BEFORE_DAY; i < klines.length; i++) {
+  for (let i = DAY + BEFORE_DAY; i <= klines.length; i++) {
     const arr = klines.slice(i - (DAY + BEFORE_DAY), i);
     if (findTop(arr)) {
       topPoints.push(klines[i - 1]);
