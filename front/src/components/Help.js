@@ -65,9 +65,6 @@ function App() {
         <Link href="https://www.lookintobitcoin.com/charts/bitcoin-investor-tool/" target="_blank">
           Bitcoin Investor Tool: 2-Year MA Multiplier
         </Link>
-        <Link href="https://www.bybt.com/zh/MA" target="_blank">
-          比特币逃顶指标·抄底买入信号解读
-        </Link>
         <Link href="https://www.lookintobitcoin.com/charts/200-week-moving-average-heatmap/" target="_blank">
           200 Week Moving Average Heatmap
         </Link>
@@ -82,6 +79,12 @@ function App() {
         </Link>
         <Link href="https://www.mytokencap.com/concept/263" target="_blank">
           Binance Investment
+        </Link>
+        <Link href="https://www.bybt.com/zh/MA" target="_blank">
+          BTC逃顶指标·抄底买入信号解读
+        </Link>
+        <Link href="https://www.bybt.com/zh/LongShortRatio" target="_blank">
+          BTC多空比
         </Link>
       </HelpWarning>
       <Help>
