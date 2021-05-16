@@ -37,8 +37,8 @@ function App() {
         <Text type="success">When the music is on you gotta dance</Text>
         <Text type="warning">实质性下跌还是恐慌性下跌</Text>
         <Text type="danger">亏钱时的痛苦感比赚钱时的喜悦感要高得多</Text>
-        <Text type="warning">停损不停利</Text>
-        <Text type="success">Go big or go home</Text>
+        <Text>停损不停利</Text>
+        <Text type="warning">Go big or go home</Text>
 
         <Link href="https://bitbo.io/" target="_blank">
           bitbo
