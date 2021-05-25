@@ -38,7 +38,7 @@ function App() {
         <Text type="warning">实质性下跌还是恐慌性下跌</Text>
         <Text type="danger">亏钱时的痛苦感比赚钱时的喜悦感要高得多</Text>
         <Text>停损不停利</Text>
-        <Text type="warning">Go big or go home</Text>
+        <Text type="danger">Go big or go home</Text>
 
         <Link href="https://bitbo.io/" target="_blank">
           bitbo
