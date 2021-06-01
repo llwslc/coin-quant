@@ -39,6 +39,7 @@ function App() {
         <Text type="danger">亏钱时的痛苦感比赚钱时的喜悦感要高得多</Text>
         <Text>停损不停利</Text>
         <Text type="danger">Go big or go home</Text>
+        <Text type="warning">卖出的时候第一时间思考什么时候买入</Text>
 
         <Link href="https://bitbo.io/" target="_blank">
           bitbo
