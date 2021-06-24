@@ -40,6 +40,8 @@ function App() {
         <Text>停损不停利</Text>
         <Text type="danger">Go big or go home</Text>
         <Text type="warning">卖出的时候第一时间思考什么时候买入</Text>
+        <Text type="success">牛市新出的币在一开始就会被高估</Text>
+        <Text type="warning">矿工借钱开矿场也属于加杠杆行为</Text>
 
         <Link href="https://bitbo.io/" target="_blank">
           bitbo
