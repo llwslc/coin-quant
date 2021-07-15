@@ -531,7 +531,7 @@ export const getEcKlinesOpt = (data, symbol, point = false) => {
   return {
     title: {
       text: `${symbol} - ${Number(optData.values[optData.values.length - 1][1])}`,
-      link: `${config.binanceUrl.base}${symbol}${config.binanceUrl.query}`,
+      link: `${config.binanceUrl.base}${symbol.replace(/(USDT$|BUSD$)/, '_$1')}${config.binanceUrl.query}`,
       textStyle: {
         fontSize: 12
       },
