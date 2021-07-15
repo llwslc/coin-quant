@@ -13,7 +13,7 @@ const Config = {
   },
   binanceUrl: {
     base: 'https://www.binance.com/zh-CN/trade/',
-    query: '?layout=pro'
+    query: '?layout=pro&theme=dark&type=spot'
   },
   researchUrl: {
     base: 'https://research.binance.com/cn'
