@@ -161,19 +161,25 @@ const main = async () => {
       lowest = {},
       current = {}
     } = d;
-    console.log(
-      s,
-      formatDate(before2021High),
-      formatDate(after2021High),
-      formatDate(highest),
-      formatDate(at20210519),
-      formatDate(before2021Low),
-      formatDate(after2021Low),
-      formatDate(after20210519High),
-      formatDate(after20210519Low),
-      formatDate(lowest),
-      formatDate(current)
-    );
+    const formatPrint = () => {
+      console.log(
+        s,
+        formatDate(before2021High),
+        formatDate(after2021High),
+        formatDate(highest),
+        formatDate(at20210519),
+        formatDate(before2021Low),
+        formatDate(after2021Low),
+        formatDate(after20210519High),
+        formatDate(after20210519Low),
+        formatDate(lowest),
+        formatDate(current)
+      );
+    };
+
+    if (before2021High.high > after2021High.high) {
+      formatPrint();
+    }
   });
 };
 
