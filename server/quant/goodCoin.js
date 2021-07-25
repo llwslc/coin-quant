@@ -76,6 +76,20 @@ const main = async () => {
       }
     }
 
+    if (time >= at20210519) {
+      if (!allSymbols[symbol].after20210519High) {
+        allSymbols[symbol].after20210519High = curData;
+      } else {
+        if (high > allSymbols[symbol].after20210519High.high) allSymbols[symbol].after20210519High = curData;
+      }
+
+      if (!allSymbols[symbol].after20210519Low) {
+        allSymbols[symbol].after20210519Low = curData;
+      } else {
+        if (low < allSymbols[symbol].after20210519Low.low) allSymbols[symbol].after20210519Low = curData;
+      }
+    }
+
     if (!allSymbols[symbol].highest) {
       allSymbols[symbol].highest = curData;
     } else {
@@ -118,6 +132,10 @@ const main = async () => {
         return `2021最低 ${dateString(data.time, data.low)}`;
       case 'at20210519':
         return `519最低 ${dateString(data.time, data.low)}`;
+      case 'after20210519High':
+        return `519后低 ${dateString(data.time, data.low)}`;
+      case 'after20210519Low':
+        return `519后高 ${dateString(data.time, data.low)}`;
       case 'highest':
         return `历高 ${dateString(data.time, data.high)}`;
       case 'lowest':
@@ -137,6 +155,8 @@ const main = async () => {
       before2021Low = {},
       after2021Low = {},
       at20210519 = {},
+      after20210519High = {},
+      after20210519Low = {},
       highest = {},
       lowest = {},
       current = {}
@@ -149,6 +169,8 @@ const main = async () => {
       formatDate(at20210519),
       formatDate(before2021Low),
       formatDate(after2021Low),
+      formatDate(after20210519High),
+      formatDate(after20210519Low),
       formatDate(lowest),
       formatDate(current)
     );
