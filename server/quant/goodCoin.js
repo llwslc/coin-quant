@@ -123,25 +123,25 @@ const main = async () => {
     };
     switch (type) {
       case 'before2021High':
-        return `2021前高 ${dateString(data.time, data.high)}`;
+        return ` 2021前高 ${dateString(data.time, data.high)}`;
       case 'after2021High':
-        return `2021最高 ${dateString(data.time, data.high)}`;
+        return ` 2021最高 ${dateString(data.time, data.high)}`;
       case 'before2021Low':
-        return `2021前低 ${dateString(data.time, data.low)}`;
+        return ` 2021前低 ${dateString(data.time, data.low)}`;
       case 'after2021Low':
-        return `2021最低 ${dateString(data.time, data.low)}`;
+        return ` 2021最低 ${dateString(data.time, data.low)}`;
       case 'at20210519':
-        return `519最低 ${dateString(data.time, data.low)}`;
+        return ` 519最低 ${dateString(data.time, data.low)}`;
       case 'after20210519High':
-        return `519后低 ${dateString(data.time, data.low)}`;
+        return ` 519后低 ${dateString(data.time, data.low)}`;
       case 'after20210519Low':
-        return `519后高 ${dateString(data.time, data.low)}`;
+        return ` 519后高 ${dateString(data.time, data.high)}`;
       case 'highest':
-        return `历高 ${dateString(data.time, data.high)}`;
+        return ` 历高 ${dateString(data.time, data.high)}`;
       case 'lowest':
-        return `史低 ${dateString(data.time, data.low)}`;
+        return ` 史低 ${dateString(data.time, data.low)}`;
       case 'current':
-        return `现价 ${dateString(data.time, data.close)}`;
+        return ` 现价 ${dateString(data.time, data.close)}`;
       default:
         return '';
     }
@@ -163,21 +163,26 @@ const main = async () => {
     } = d;
     const formatPrint = () => {
       console.log(
-        s,
-        formatDate(before2021High),
-        formatDate(after2021High),
-        formatDate(highest),
-        formatDate(at20210519),
-        formatDate(before2021Low),
-        formatDate(after2021Low),
-        formatDate(after20210519High),
-        formatDate(after20210519Low),
-        formatDate(lowest),
-        formatDate(current)
+        `${s}${formatDate(before2021High)}${formatDate(after2021High)}${formatDate(highest)}${formatDate(
+          at20210519
+        )}${formatDate(before2021Low)}${formatDate(after2021Low)}${formatDate(after20210519High)}${formatDate(
+          after20210519Low
+        )}${formatDate(lowest)}${formatDate(current)}`
       );
     };
 
+    // 2021 牛市没破前高
     if (before2021High.high > after2021High.high) {
+      // formatPrint();
+    }
+
+    // 2021519 后破前高
+    if (after20210519High.high >= highest.high) {
+      // formatPrint();
+    }
+
+    // 当前低于 2021519
+    if (at20210519.low >= current.close) {
       formatPrint();
     }
   });
