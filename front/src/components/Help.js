@@ -43,6 +43,8 @@ function App() {
         <Text type="success">牛市新出的币在一开始就会被高估</Text>
         <Text type="warning">矿工借钱开矿场也属于加杠杆行为</Text>
         <Text type="danger">BTC占比过低是不可持续的(BTC不涨或全线崩盘)</Text>
+        <Text>主流趋势缺点,山寨会爆发,赢过主流后崩盘</Text>
+        <Text type="danger">Defi 本质是给币圈加入了债务周期</Text>
 
         <Link href="https://bitbo.io/" target="_blank">
           bitbo
