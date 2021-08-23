@@ -92,7 +92,10 @@ function App() {
           BTC逃顶指标·抄底买入信号解读
         </Link>
         <Link href="https://www.bybt.com/zh/LongShortRatio" target="_blank">
-          BTC多空比
+          BTC多空比 (大于 1.3 高位)
+        </Link>
+        <Link href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank">
+          恐惧 {'&'} 贪婪指数 (10 买 70 卖)
         </Link>
       </HelpWarning>
       <Help>
