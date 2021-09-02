@@ -7,6 +7,7 @@
  * TNCmcTdyrYKMtmE1KU2itzeCX76jGm5Not poloniex
  * TBA6CypYJizwA9XdC7Ubgc5F1bxrQ7SqPt gate
  * TM1zzNDZD2DPASbKcgdVoTYhfmYgtfwx9R okex
+ * TTd9qHyjqiUkfTxe3gotbuTMpjU8LEbpkN kraken
  * TYDzsYUEpvnYmQk4zGP9sWWcTEd2MiAtW6 ftx
  * TWtqXzfx8vWf7gnhM1HKKHo7zvwRA65NdQ sbf
  */
