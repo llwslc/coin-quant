@@ -183,7 +183,12 @@ const main = async () => {
 
     // 当前低于 2021519
     if (at20210519.low >= current.close) {
-      formatPrint();
+      // formatPrint();
+    }
+
+    // 当前高于 2021519
+    if (at20210519.open <= current.close) {
+      console.log(`${s} ${at20210519.open} - ${current.close}`);
     }
   });
 };

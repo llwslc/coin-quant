@@ -2,7 +2,7 @@
 
 cd db
 
-git pull
+git pull --ff-only
 
 cd ..
 

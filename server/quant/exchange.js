@@ -11,3 +11,12 @@
  * TYDzsYUEpvnYmQk4zGP9sWWcTEd2MiAtW6 ftx
  * TWtqXzfx8vWf7gnhM1HKKHo7zvwRA65NdQ sbf
  */
+
+/**
+ * USDT 提现
+ *
+ * binance
+ * huobi 1u
+ * okex 1u
+ * gate 0u
+ */
