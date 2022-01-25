@@ -1,6 +1,17 @@
 #!/bin/sh
 
 cd db
-git add .
+
+rm -rf dbUpdate
+mkdir dbUpdate
+cp dklines.db dbUpdate/
+cd dbUpdate
+
+git init
+git add -A
 git commit -m 'backup'
-git push
+
+git push -f git@github.com:llwslc/coin-quant-front.git master:master
+
+cd ..
+rm -rf dbUpdate

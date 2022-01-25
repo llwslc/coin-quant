@@ -104,6 +104,7 @@ dist
 .tern-port
 
 db
+dbUpdate
 package-lock.json
 
 .vscode
