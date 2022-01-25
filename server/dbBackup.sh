@@ -11,7 +11,7 @@ git init
 git add -A
 git commit -m 'backup'
 
-git push -f git@github.com:llwslc/coin-quant-front.git master:master
+git push -f git@github.com:llwslc/coin-quant-db.git master:master
 
 cd ..
 rm -rf dbUpdate
