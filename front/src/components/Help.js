@@ -45,7 +45,7 @@ function App() {
         <Text type="danger">BTC占比过低是不可持续的(BTC不涨或全线崩盘)</Text>
         <Text>主流趋势缺点,山寨会爆发,赢过主流后崩盘</Text>
         <Text type="danger">Defi 本质是给币圈加入了债务周期</Text>
-        <Text type="warning">有用就有价, 没用的 meme 没有上限, 买了就放着才能一直涨</Text>
+        <Text type="warning">有用就有价, 没用的 meme 没有上限, 买了就囤着才能一直涨</Text>
 
         <Link href="https://bitbo.io/" target="_blank">
           bitbo
