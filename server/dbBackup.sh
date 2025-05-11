@@ -1,5 +1,7 @@
 #!/bin/sh
 
+exit 0
+
 cd db
 
 rm -rf dbUpdate
