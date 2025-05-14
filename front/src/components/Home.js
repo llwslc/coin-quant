@@ -16,16 +16,7 @@ import {
 import { Button, Divider, Input, Layout, Modal, Select, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
-import {
-  getBaseAsset,
-  findNew,
-  findPoint,
-  getEcKlinesOpt,
-  getEcVolsOpt,
-  readFavorites,
-  saveFavorites,
-  findTD9
-} from '../utils';
+import { getBaseAsset, findNew, findPoint, getEcKlinesOpt, getEcVolsOpt, readFavorites, saveFavorites, findTD9 } from '../utils';
 
 import Footer from './Footer';
 
@@ -35,6 +26,13 @@ const HomeMain = styled.div`
   .ant-divider-horizontal {
     margin: 0;
   }
+`;
+
+const HomeCompany = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 `;
 
 const HomeRow = styled.div`
@@ -249,18 +247,7 @@ function App() {
   ];
   const buyTypes = ['upBuys', 'downBuys', 'bottoms', 'fuckingBottoms'];
   const sellTypes = ['upSells', 'downSells', 'tops', 'fuckingTops'];
-  const trendTypes = [
-    'favs',
-    'ups',
-    'downs',
-    'fastUps',
-    'fastDowns',
-    'slowUps',
-    'slowDowns',
-    'alls',
-    'news',
-    'volRanking'
-  ];
+  const trendTypes = ['favs', 'ups', 'downs', 'fastUps', 'fastDowns', 'slowUps', 'slowDowns', 'alls', 'news', 'volRanking'];
   const zoneTypes = ['binance', 'coinbase'];
   const td9Types = ['td9Tops', 'td9FuckingTops', 'td9Bottoms', 'td9FuckingBottoms'];
 
@@ -270,22 +257,8 @@ function App() {
 
       const { klines = [], coins = [] } = data;
       const news = findNew(klines, 20);
-      const {
-        ups,
-        upBuys,
-        upSells,
-        downs,
-        downBuys,
-        downSells,
-        fastUps,
-        fastDowns,
-        slowUps,
-        slowDowns,
-        tops,
-        bottoms,
-        fuckingTops,
-        fuckingBottoms
-      } = findPoint(klines);
+      const { ups, upBuys, upSells, downs, downBuys, downSells, fastUps, fastDowns, slowUps, slowDowns, tops, bottoms, fuckingTops, fuckingBottoms } =
+        findPoint(klines);
 
       const favs = readFavorites();
 
@@ -500,6 +473,7 @@ function App() {
   return (
     <Layout>
       <HomeMain>
+        <HomeCompany>© 2025 北京超木子商贸中心 All rights reserved</HomeCompany>
         <HomeRow mb={0}>
           {trendTypes.map(_ => {
             return (
@@ -558,12 +532,7 @@ function App() {
                     </Option>
                   ))}
                 </Select>
-                <Button
-                  type="primary"
-                  disabled={favs.includes(searchSymbol)}
-                  icon={<PlusOutlined />}
-                  onClick={() => addFavs()}
-                />
+                <Button type="primary" disabled={favs.includes(searchSymbol)} icon={<PlusOutlined />} onClick={() => addFavs()} />
                 <Button type="primary" icon={<CloudSyncOutlined />} onClick={() => showFavsModal()} />
               </HomeSelectSymbol>
             </HomeRow>
@@ -572,12 +541,7 @@ function App() {
               {state[curType].map(_ => {
                 return (
                   <div key={_}>
-                    <Tag
-                      color={curSymbol === _ ? '#177ddc' : ''}
-                      closable
-                      onClose={() => removeFavs(_)}
-                      onClick={() => changeCurSymbol(_)}
-                    >
+                    <Tag color={curSymbol === _ ? '#177ddc' : ''} closable onClose={() => removeFavs(_)} onClick={() => changeCurSymbol(_)}>
                       {getBaseAsset(_)}
                     </Tag>
                   </div>
@@ -619,11 +583,7 @@ function App() {
               )}
             </div>
             <div>
-              {curSymbol && (
-                <Tag onClick={() => addFavs(curSymbol)}>
-                  {favs.includes(curSymbol) ? <StarFilled /> : <StarOutlined />}
-                </Tag>
-              )}
+              {curSymbol && <Tag onClick={() => addFavs(curSymbol)}>{favs.includes(curSymbol) ? <StarFilled /> : <StarOutlined />}</Tag>}
               {symbolTypes.map(_ => {
                 return (
                   <div key={_}>
@@ -675,24 +635,14 @@ function App() {
         <HomeRow>
           <HomeEcharts>
             {curSymbol && <ReactECharts theme="dark" style={{ height: `${ecKlinesHeight}px` }} option={ecKlinesOpt} />}
-            {curType === 'volRanking' && (
-              <ReactECharts theme="dark" style={{ height: `${ecVolsHeight}px` }} option={ecVolsOpt} />
-            )}
+            {curType === 'volRanking' && <ReactECharts theme="dark" style={{ height: `${ecVolsHeight}px` }} option={ecVolsOpt} />}
           </HomeEcharts>
         </HomeRow>
 
         <Footer />
       </HomeMain>
 
-      <Modal
-        title=""
-        footer={null}
-        bodyStyle={{ padding: 20 }}
-        width={240}
-        closable={false}
-        visible={showUpdateFavs}
-        onCancel={() => setShowUpdateFavs(false)}
-      >
+      <Modal title="" footer={null} bodyStyle={{ padding: 20 }} width={240} closable={false} visible={showUpdateFavs} onCancel={() => setShowUpdateFavs(false)}>
         <HomeCloudFavsInput>
           <Input placeholder="key" value={favsKey} onChange={e => setFavsKey(e.target.value)} />
         </HomeCloudFavsInput>
@@ -701,19 +651,8 @@ function App() {
         <HomeCloudFavsInput>{favsErrMsg && <Tag color="error">{favsErrMsg}</Tag>}</HomeCloudFavsInput>
 
         <HomeCloudFavsButton>
-          <Button
-            type="primary"
-            disabled={!favsKey.length}
-            icon={<CloudDownloadOutlined />}
-            onClick={() => downloadFavs()}
-          />
-          <Button
-            type="primary"
-            danger
-            disabled={!favsKey.length}
-            icon={<CloudUploadOutlined />}
-            onClick={() => uploadFavs()}
-          />
+          <Button type="primary" disabled={!favsKey.length} icon={<CloudDownloadOutlined />} onClick={() => downloadFavs()} />
+          <Button type="primary" danger disabled={!favsKey.length} icon={<CloudUploadOutlined />} onClick={() => uploadFavs()} />
         </HomeCloudFavsButton>
       </Modal>
     </Layout>
