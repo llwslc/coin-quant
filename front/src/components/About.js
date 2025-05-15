@@ -33,13 +33,7 @@ function App() {
     <AboutStyle>
       <BlogStyle>
         <h1>TRX.GIFT</h1>
-        <h2>
-          trx.gift 现已申请集成{' '}
-          <Link href="https://www.tradingview.com" target="_blank">
-            TradingView
-          </Link>{' '}
-          ，带来了更直观的图表和技术分析工具。
-        </h2>
+        <h2>trx.gift 现已申请集成 TradingView，带来了更直观的图表和技术分析工具。</h2>
         <h2>通过这一合作，用户可以：</h2>
         <h2>1.实时市场分析</h2>
         <h2>
@@ -52,20 +46,8 @@ function App() {
         <h2>2.回测功能</h2>
         <h2>模拟历史数据中的交易决策，帮助用户优化策略，提高投资回报。</h2>
         <h2>3.无缝体验</h2>
-        <h2>
-          将来，用户可以直接在 trx.gift 交易界面中使用{' '}
-          <Link href="https://www.tradingview.com" target="_blank">
-            TradingView
-          </Link>{' '}
-          工具，无需切换平台，操作更加高效便捷。
-        </h2>
-        <h2>
-          如果能够达成与{' '}
-          <Link href="https://www.tradingview.com" target="_blank">
-            TradingView
-          </Link>{' '}
-          的结合，trx.gift 将能够为用户提供更智能、更便捷的交易支持。
-        </h2>
+        <h2>将来，用户可以直接在 trx.gift 交易界面中使用 TradingView 工具，无需切换平台，操作更加高效便捷。</h2>
+        <h2>如果能够达成与 TradingView 的结合，trx.gift 将能够为用户提供更智能、更便捷的交易支持。</h2>
       </BlogStyle>
 
       <CopyrightStyle>© 2025 北京超木子商贸中心 All rights reserved</CopyrightStyle>
