@@ -17,7 +17,7 @@ function App() {
   return (
     <FooterMain>
       <Link href="#/">Home</Link>
-      <Link href="#/aboout">About</Link>
+      <Link href="#/about">About</Link>
       <Link href="#/td9">TD9</Link>
       <Link href="#/help">Help</Link>
     </FooterMain>
