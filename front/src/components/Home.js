@@ -28,13 +28,6 @@ const HomeMain = styled.div`
   }
 `;
 
-const HomeCompany = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-`;
-
 const HomeRow = styled.div`
   margin: 8px auto;
   max-width: 1280px;
@@ -473,7 +466,6 @@ function App() {
   return (
     <Layout>
       <HomeMain>
-        <HomeCompany>© 2025 北京超木子商贸中心 All rights reserved</HomeCompany>
         <HomeRow mb={0}>
           {trendTypes.map(_ => {
             return (

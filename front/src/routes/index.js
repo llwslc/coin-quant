@@ -5,6 +5,7 @@ import Fallback from '../components/Fallback';
 const Home = React.lazy(() => import('../components/Home'));
 const Help = React.lazy(() => import('../components/Help'));
 const Td9 = React.lazy(() => import('../components/Td9'));
+const About = React.lazy(() => import('../components/About'));
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Switch>
           <Route path="/help" component={Help} />
           <Route path="/td9" component={Td9} />
+          <Route path="/about" component={About} />
           <Route component={Home} />
         </Switch>
       </React.Suspense>
