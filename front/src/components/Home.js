@@ -17,6 +17,7 @@ import { Button, Divider, Input, Layout, Modal, Select, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import config from '../config';
 import { getBaseAsset, findNew, findPoint, getEcKlinesOpt, getEcVolsOpt, readFavorites, saveFavorites, findTD9 } from '../utils';
+import okxDatafeed from '../datafeeds/okx';
 
 import Footer from './Footer';
 
@@ -307,6 +308,47 @@ function App() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const initTradingViewChart = () => {
+      if (window.TradingView && window.TradingView.widget) {
+        window.tvWidget = new window.TradingView.widget({
+          symbol: 'BTC-USDT',
+          interval: '1D',
+          fullscreen: false,
+          container: 'tv_chart_container',
+          datafeed: okxDatafeed,
+          library_path: '/charting_library/',
+          locale: 'zh',
+          disabled_features: ['use_localstorage_for_settings'],
+          enabled_features: ['study_templates'],
+          charts_storage_url: 'https://saveload.tradingview.com',
+          charts_storage_api_version: '1.1',
+          client_id: 'tradingview.com',
+          user_id: 'public_user_id',
+          theme: 'dark',
+          autosize: true,
+          studies_overrides: {}
+        });
+      } else {
+        setTimeout(initTradingViewChart, 100);
+      }
+    };
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = '/charting_library/charting_library.js';
+    script.onload = initTradingViewChart;
+    document.head.appendChild(script);
+
+    return () => {
+      if (window.tvWidget) {
+        window.tvWidget.remove();
+        window.tvWidget = null;
+      }
+      script.remove();
+    };
+  }, []);
+
   const initTd9 = () => {
     setTd9Exist(false);
     setTd9Tops([]);
@@ -332,6 +374,14 @@ function App() {
 
     setEcKlinesOpt(getEcKlinesOpt(allData[_], _));
     initTd9();
+
+    // 同步更新 TradingView 图表符号
+    if (window.tvWidget && window.tvWidget.setSymbol) {
+      const tradingViewSymbol = _.replace('USDT', '-USDT');
+      window.tvWidget.setSymbol(tradingViewSymbol, '1D', () => {
+        console.log('TradingView symbol updated to:', tradingViewSymbol);
+      });
+    }
 
     setTimeout(async () => {
       const { topPoints, confirmTopPoints, bottomPoints, confirmBottomPoints } = await findTD9(allData[_], _);
@@ -626,6 +676,7 @@ function App() {
 
         <HomeRow>
           <HomeEcharts>
+            <div id="tv_chart_container" style={{ height: '600px', width: '100%' }}></div>
             {curSymbol && <ReactECharts theme="dark" style={{ height: `${ecKlinesHeight}px` }} option={ecKlinesOpt} />}
             {curType === 'volRanking' && <ReactECharts theme="dark" style={{ height: `${ecVolsHeight}px` }} option={ecVolsOpt} />}
           </HomeEcharts>
